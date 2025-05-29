@@ -55,12 +55,13 @@ fun Letter(character: Char, modifier: Modifier = Modifier) {
         modifier = Modifier
             .width(64.dp)
             .height(64.dp)
-            .border(width = 2.dp, color = PurpleGrey40)
+            .border(width = 2.dp, color = Color.DarkGray)
             .wrapContentSize(),
     ) {
         Text(
             text = "$character",
-            modifier = modifier
+            style = MaterialTheme.typography.titleLarge,
+            modifier = modifier,
         )
     }
 }
@@ -72,6 +73,19 @@ fun Word(word: String, modifier: Modifier = Modifier) {
     ) {
         for (letter in word) {
             Letter(letter)
+        }
+    }
+}
+
+@Composable
+fun Board(words: List<Unit>, modifier: Modifier = Modifier) {
+    Column(
+        modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        for (word in words) {
+            Word("hello")
         }
     }
 }
@@ -107,21 +121,19 @@ fun GameScreen(modifier: Modifier = Modifier) {
             )
         },
     ) { innerPadding ->
-        Column(
+        Board(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(innerPadding)
                 .background(color = Color.LightGray),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            Word("hello")
-            Word("hello")
-            Word("hello")
-            Word("hello")
-            Word("hello")
-            Word("hello")
-        }
+            words = listOf(
+                Word("hello"),
+                Word("hello"),
+                Word("hello"),
+                Word("hello"),
+                Word("hello"),
+                Word("hello")
+        ))
     }
 }
 
