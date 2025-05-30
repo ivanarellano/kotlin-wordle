@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -22,9 +21,9 @@ fun Letter(character: Char, modifier: Modifier = Modifier) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .width(64.dp)
-            .height(64.dp)
-            .border(width = 2.dp, color = Color.LightGray)
+            .width(62.dp)
+            .height(62.dp)
+            .border(width = 2.dp, color = MaterialTheme.colorScheme.primaryContainer)
             .wrapContentSize(),
     ) {
         Text(
