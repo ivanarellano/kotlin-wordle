@@ -97,25 +97,10 @@ fun Letter(model: LetterModel, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun Word(word: String, target: String, modifier: Modifier = Modifier) {
+fun Word(word: String, targetMap: Map<Char, List<Int>>, modifier: Modifier = Modifier) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        fun getIndexedLetterMap(word: String): Map<Char, List<Int>> {
-            val targetMap = mutableMapOf<Char, MutableList<Int>>().withDefault { mutableListOf() }
-
-            for (i in word.indices) {
-                val letter = word[i]
-                val list = targetMap.getValue(letter)
-
-                list.add(i)
-                targetMap[letter] = list
-            }
-            return targetMap.toMap()
-        }
-
-        val targetMap = getIndexedLetterMap(word = target)
-
         for (i in word.indices) {
             val letter = word[i]
 
@@ -142,13 +127,28 @@ fun Board(target: String, guessedWords: List<String>, modifier: Modifier = Modif
     val emptyRows = maxWordCount - guessedWords.size
     val wordRows = guessedWords + List(emptyRows) { "     " }
 
+    fun getIndexedLetterMap(word: String): Map<Char, List<Int>> {
+        val targetMap = mutableMapOf<Char, MutableList<Int>>().withDefault { mutableListOf() }
+
+        for (i in word.indices) {
+            val letter = word[i]
+            val list = targetMap.getValue(letter)
+
+            list.add(i)
+            targetMap[letter] = list
+        }
+        return targetMap.toMap()
+    }
+
+    val targetMap = getIndexedLetterMap(word = target)
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp),
         modifier = modifier.wrapContentSize(),
     ) {
         for (word in wordRows) {
-            Word(word, target)
+            Word(word, targetMap)
         }
     }
 }
