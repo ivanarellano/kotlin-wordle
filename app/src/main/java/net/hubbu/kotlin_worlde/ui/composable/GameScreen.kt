@@ -51,11 +51,10 @@ fun GameScreen(modifier: Modifier = Modifier) {
             )
         },
     ) { innerPadding ->
-        Column {
+        Column(
+            modifier = Modifier.padding(innerPadding)
+        ) {
             Board(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(innerPadding),
                 words = listOf(
                     "ABOUT",
                     "TABLE",
@@ -63,12 +62,15 @@ fun GameScreen(modifier: Modifier = Modifier) {
                     "PLANT",
                     "WATER",
                     "HOUSE"
-                )
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(2.5f)
             )
             Keyboard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(innerPadding)
+                    .weight(1f)
             )
         }
     }

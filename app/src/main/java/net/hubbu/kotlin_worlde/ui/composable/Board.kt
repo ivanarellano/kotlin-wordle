@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 fun Letter(character: Char, modifier: Modifier = Modifier) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
+        modifier = modifier
             .width(62.dp)
             .height(62.dp)
             .border(width = 2.dp, color = MaterialTheme.colorScheme.primaryContainer)
@@ -29,7 +29,6 @@ fun Letter(character: Char, modifier: Modifier = Modifier) {
         Text(
             text = "$character",
             style = MaterialTheme.typography.headlineLarge,
-            modifier = modifier,
         )
     }
 }
@@ -48,9 +47,9 @@ fun Word(word: String, modifier: Modifier = Modifier) {
 @Composable
 fun Board(words: List<String>, modifier: Modifier = Modifier) {
     Column(
-        modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp),
+        modifier = modifier.wrapContentSize(),
     ) {
         for (word in words) {
             Word(word)

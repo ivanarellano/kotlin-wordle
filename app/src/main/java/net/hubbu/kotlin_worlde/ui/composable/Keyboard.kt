@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 fun KeyboardLetter(character: Char, modifier: Modifier = Modifier) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
+        modifier = modifier
             .defaultMinSize(minWidth = 28.dp, minHeight = 52.dp)
             .clip(RoundedCornerShape(4.dp))
             .background(color = MaterialTheme.colorScheme.primaryContainer)
@@ -30,7 +30,6 @@ fun KeyboardLetter(character: Char, modifier: Modifier = Modifier) {
         Text(
             text = "$character",
             style = MaterialTheme.typography.titleMedium,
-            modifier = modifier,
         )
     }
 }
@@ -47,9 +46,9 @@ fun Keyboard(modifier: Modifier = Modifier) {
     }
 
     Column(
-        modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(6.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
+        modifier = modifier.wrapContentSize(),
     ) {
         KeyRow("QWERTYUIOP")
         KeyRow("ASDFGHJKL")
