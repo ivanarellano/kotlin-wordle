@@ -55,7 +55,7 @@ fun GameScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(innerPadding)
         ) {
             Board(
-                words = listOf(
+                guessedWords = listOf(
                     "ABOUT",
                     "TABLE",
                     "CHAIR",

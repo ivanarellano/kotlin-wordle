@@ -16,8 +16,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+// TODO
+const val target = "PRANK"
+const val maxWordCount = 6
+
 @Composable
-fun Letter(character: Char, modifier: Modifier = Modifier) {
+fun Letter(character: Char?, modifier: Modifier = Modifier) {
+//    Mutable attributes
+//    - character, border color, background color
+//    States
+//    - empty, guessing, correct, incorrect, partial
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -26,10 +34,11 @@ fun Letter(character: Char, modifier: Modifier = Modifier) {
             .border(width = 2.dp, color = MaterialTheme.colorScheme.primaryContainer)
             .wrapContentSize(),
     ) {
-        Text(
-            text = "$character",
-            style = MaterialTheme.typography.headlineLarge,
-        )
+        if (character != ' ')
+            Text(
+                text = "$character",
+                style = MaterialTheme.typography.headlineLarge,
+            )
     }
 }
 
@@ -45,13 +54,17 @@ fun Word(word: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun Board(words: List<String>, modifier: Modifier = Modifier) {
+fun Board(guessedWords: List<String>, modifier: Modifier = Modifier) {
+    val emptyRows = maxWordCount - guessedWords.size
+    val wordRows = guessedWords + List(emptyRows) { "     " }
+//    State
+//    - Words
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp),
         modifier = modifier.wrapContentSize(),
     ) {
-        for (word in words) {
+        for (word in wordRows) {
             Word(word)
         }
     }
@@ -61,12 +74,10 @@ fun Board(words: List<String>, modifier: Modifier = Modifier) {
 @Composable
 fun BoardPreview() {
     Board(
-        words = listOf(
+        guessedWords = listOf(
             "ABOUT",
             "TABLE",
             "CHAIR",
             "PLANT",
-            "WATER",
-            "HOUSE"
         ))
 }

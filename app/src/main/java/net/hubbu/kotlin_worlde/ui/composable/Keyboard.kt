@@ -22,7 +22,7 @@ fun KeyboardLetter(character: Char, modifier: Modifier = Modifier) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .defaultMinSize(minWidth = 28.dp, minHeight = 52.dp)
+            .defaultMinSize(minWidth = 28.dp, minHeight = 56.dp)
             .clip(RoundedCornerShape(4.dp))
             .background(color = MaterialTheme.colorScheme.primaryContainer)
             .wrapContentSize(),
