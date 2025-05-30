@@ -57,12 +57,12 @@ fun GameScreen(modifier: Modifier = Modifier) {
                     .fillMaxWidth()
                     .padding(innerPadding),
                 words = listOf(
-                    "hello",
-                    "hello",
-                    "hello",
-                    "hello",
-                    "hello",
-                    "hello",
+                    "ABOUT",
+                    "TABLE",
+                    "CHAIR",
+                    "PLANT",
+                    "WATER",
+                    "HOUSE"
                 )
             )
             Keyboard(

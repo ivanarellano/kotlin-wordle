@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -53,7 +54,21 @@ fun Board(words: List<String>, modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         for (word in words) {
-            Word("hello")
+            Word(word)
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BoardPreview() {
+    Board(
+        words = listOf(
+            "ABOUT",
+            "TABLE",
+            "CHAIR",
+            "PLANT",
+            "WATER",
+            "HOUSE"
+        ))
 }
