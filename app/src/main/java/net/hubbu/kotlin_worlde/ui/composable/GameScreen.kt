@@ -55,13 +55,12 @@ fun GameScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(innerPadding)
         ) {
             Board(
+                target = "AUDIO",
                 guessedWords = listOf(
                     "ABOUT",
                     "TABLE",
                     "CHAIR",
                     "PLANT",
-                    "WATER",
-                    "HOUSE"
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
