@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,7 +35,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.hubbu.kotlin_worlde.ui.theme.KotlinWorldeTheme
-import net.hubbu.kotlin_worlde.ui.theme.PurpleGrey40
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,12 +55,12 @@ fun Letter(character: Char, modifier: Modifier = Modifier) {
         modifier = Modifier
             .width(64.dp)
             .height(64.dp)
-            .border(width = 2.dp, color = Color.DarkGray)
+            .border(width = 2.dp, color = Color.LightGray)
             .wrapContentSize(),
     ) {
         Text(
             text = "$character",
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.headlineLarge,
             modifier = modifier,
         )
     }
@@ -78,7 +78,7 @@ fun Word(word: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun Board(words: List<Unit>, modifier: Modifier = Modifier) {
+fun Board(words: List<String>, modifier: Modifier = Modifier) {
     Column(
         modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -87,6 +87,45 @@ fun Board(words: List<Unit>, modifier: Modifier = Modifier) {
         for (word in words) {
             Word("hello")
         }
+    }
+}
+
+@Composable
+fun KeyboardLetter(character: Char, modifier: Modifier = Modifier) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .defaultMinSize(minWidth = 18.dp)
+            .background(color = Color.LightGray)
+            .wrapContentSize(),
+    ) {
+        Text(
+            text = "$character",
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = modifier,
+        )
+    }
+}
+
+@Composable
+fun Keyboard(modifier: Modifier = Modifier) {
+    @Composable
+    fun KeyRow(keys: String) {
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            for (char in keys) {
+                KeyboardLetter(character = char)
+            }
+        }
+    }
+
+    Column(
+        modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        KeyRow("QWERTYUIOP")
+        KeyRow("ASDFGHJKL")
+        KeyRow("ZXCVBNM")
     }
 }
 
@@ -121,19 +160,24 @@ fun GameScreen(modifier: Modifier = Modifier) {
             )
         },
     ) { innerPadding ->
-        Board(
-            modifier = Modifier
+        Column {
+            Board(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(innerPadding),
+                words = listOf(
+                    "hello",
+                    "hello",
+                    "hello",
+                    "hello",
+                    "hello",
+                    "hello",
+                ))
+            Keyboard(modifier = Modifier
                 .fillMaxWidth()
                 .padding(innerPadding)
-                .background(color = Color.LightGray),
-            words = listOf(
-                Word("hello"),
-                Word("hello"),
-                Word("hello"),
-                Word("hello"),
-                Word("hello"),
-                Word("hello")
-        ))
+            )
+        }
     }
 }
 
