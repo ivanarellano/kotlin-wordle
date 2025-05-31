@@ -1,4 +1,4 @@
-package net.hubbu.kotlin_worlde.ui.theme
+package net.hubbu.kotlin_wordle.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -33,7 +33,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun KotlinWorldeTheme(
+fun KotlinWordleTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,

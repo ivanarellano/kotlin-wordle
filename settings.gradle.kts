@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Kotlin-Worlde"
+rootProject.name = "Kotlin-Wordle"
 include(":app")
  

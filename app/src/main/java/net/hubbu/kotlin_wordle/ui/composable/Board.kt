@@ -1,4 +1,4 @@
-package net.hubbu.kotlin_worlde.ui.composable
+package net.hubbu.kotlin_wordle.ui.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

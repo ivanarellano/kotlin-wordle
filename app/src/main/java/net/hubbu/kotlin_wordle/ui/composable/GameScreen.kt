@@ -1,4 +1,4 @@
-package net.hubbu.kotlin_worlde.ui.composable
+package net.hubbu.kotlin_wordle.ui.composable
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +18,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import net.hubbu.kotlin_worlde.ui.theme.KotlinWorldeTheme
+import net.hubbu.kotlin_wordle.ui.theme.KotlinWordleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,7 +78,7 @@ fun GameScreen(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun AppPreview() {
-    KotlinWorldeTheme {
+    KotlinWordleTheme {
         GameScreen(modifier = Modifier.fillMaxSize())
     }
 }

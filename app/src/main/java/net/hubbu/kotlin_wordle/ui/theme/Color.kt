@@ -1,4 +1,4 @@
-package net.hubbu.kotlin_worlde.ui.theme
+package net.hubbu.kotlin_wordle.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "net.hubbu.kotlin_worlde"
+    namespace = "net.hubbu.kotlin_wordle"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "net.hubbu.kotlin_worlde"
+        applicationId = "net.hubbu.kotlin_wordle"
         minSdk = 24
         targetSdk = 35
         versionCode = 1

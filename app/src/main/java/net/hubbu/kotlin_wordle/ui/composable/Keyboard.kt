@@ -1,4 +1,4 @@
-package net.hubbu.kotlin_worlde.ui.composable
+package net.hubbu.kotlin_wordle.ui.composable
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,8 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import net.hubbu.kotlin_worlde.R
+import net.hubbu.kotlin_wordle.R
 
 enum class KeyboardIcon(val res: Int, val description: String) {
     Delete(R.drawable.outline_backspace_24, "Backspace")

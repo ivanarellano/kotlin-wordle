@@ -1,4 +1,4 @@
-package net.hubbu.kotlin_worlde
+package net.hubbu.kotlin_wordle
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("net.hubbu.kotlin_worlde", appContext.packageName)
+        assertEquals("net.hubbu.kotlin_wordle", appContext.packageName)
     }
 }

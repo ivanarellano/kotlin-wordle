@@ -1,4 +1,4 @@
-package net.hubbu.kotlin_worlde
+package net.hubbu.kotlin_wordle
 
 import org.junit.Test
 
