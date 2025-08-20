@@ -1,5 +1,6 @@
 package net.hubbu.kotlin_wordle.ui.composable
 
+import android.R.attr.name
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -95,7 +96,7 @@ fun Keyboard(modifier: Modifier = Modifier) {
     ) {
         KeyRow("QWERTYUIOP")
         KeyRow("ASDFGHJKL")
-        KeyRow(keys ="ZXCVBNM", isBottomRow = true)
+        KeyRow(keys = "ZXCVBNM", isBottomRow = true)
     }
 }
 

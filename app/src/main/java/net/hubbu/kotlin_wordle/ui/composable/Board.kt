@@ -14,66 +14,56 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import net.hubbu.kotlin_wordle.ui.theme.GameColor
+import net.hubbu.kotlin_wordle.ui.theme.getColor
 
 // TODO
 const val maxWordCount = 6
 
 enum class LetterType {
-    Empty, Correct, Incorrect, Partial
+    Empty, Correct, Absent, Present
 }
 
-enum class ColorType {
-    Transparent, MaterialPrimary, Green, Yellow
-}
-
-@Composable
-fun ColorType.getColor() : Color = when (this) {
-    ColorType.Green -> Color(0xFF6CA965)
-    ColorType.Yellow -> Color(0xFFC8B653)
-    ColorType.Transparent -> Color.Transparent
-    ColorType.MaterialPrimary -> MaterialTheme.colorScheme.primaryContainer
-}
 
 sealed class LetterModel(
     open val char: Char,
-    open val bgColor: ColorType,
-    open val borderColor: ColorType,
+    open val bgColor: GameColor,
+    open val borderColor: GameColor,
 ) {
     abstract val type: LetterType
 
     class Empty(
         override val char: Char = ' ',
-        override val bgColor: ColorType = ColorType.Transparent,
-        override val borderColor: ColorType = ColorType.MaterialPrimary
+        override val bgColor: GameColor = GameColor.Transparent,
+        override val borderColor: GameColor = GameColor.MaterialPrimary
     ) : LetterModel(char, bgColor, borderColor) {
         override val type: LetterType = LetterType.Empty
     }
 
     class Correct(
         override val char: Char,
-        override val bgColor: ColorType = ColorType.Green,
-        override val borderColor: ColorType = ColorType.Transparent
+        override val bgColor: GameColor = GameColor.Green,
+        override val borderColor: GameColor = GameColor.Transparent
     ) : LetterModel(char, bgColor, borderColor) {
         override val type: LetterType = LetterType.Correct
     }
 
     class Incorrect(
         override val char: Char,
-        override val bgColor: ColorType = ColorType.Yellow,
-        override val borderColor: ColorType = ColorType.Transparent
+        override val bgColor: GameColor = GameColor.Yellow,
+        override val borderColor: GameColor = GameColor.Transparent
     ) : LetterModel(char, bgColor, borderColor) {
-        override val type: LetterType = LetterType.Incorrect
+        override val type: LetterType = LetterType.Absent
     }
 
     class Partial(
         override val char: Char,
-        override val bgColor: ColorType = ColorType.MaterialPrimary,
-        override val borderColor: ColorType = ColorType.Transparent
+        override val bgColor: GameColor = GameColor.MaterialPrimary,
+        override val borderColor: GameColor = GameColor.Transparent
     ) : LetterModel(char, bgColor, borderColor) {
-        override val type: LetterType = LetterType.Partial
+        override val type: LetterType = LetterType.Present
     }
 }
 
