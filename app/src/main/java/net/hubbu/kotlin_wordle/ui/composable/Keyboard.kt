@@ -32,7 +32,7 @@ enum class KeyboardIcon(val res: Int, val description: String) {
 }
 
 @Composable
-fun KeyboardButton(modifier: Modifier = Modifier, text: String? = null, icon: KeyboardIcon? = null) {
+fun KeyButton(modifier: Modifier = Modifier, text: String? = null, icon: KeyboardIcon? = null) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -50,7 +50,7 @@ fun KeyboardButton(modifier: Modifier = Modifier, text: String? = null, icon: Ke
 
         if (text != null) {
             Text(
-                text = "$text",
+                text = text,
                 style = style,
                 maxLines = 1,
                 fontSize = fontSize,
@@ -77,13 +77,13 @@ fun Keyboard(modifier: Modifier = Modifier) {
     fun KeyRow(keys: String, isBottomRow: Boolean = false) {
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             if (isBottomRow) {
-                KeyboardButton(text = "ENTER")
+                KeyButton(text = "ENTER")
             }
             for (char in keys) {
-                KeyboardButton(text = "$char")
+                KeyButton(text = "$char")
             }
             if (isBottomRow) {
-                KeyboardButton(icon = KeyboardIcon.Delete)
+                KeyButton(icon = KeyboardIcon.Delete)
             }
         }
     }
