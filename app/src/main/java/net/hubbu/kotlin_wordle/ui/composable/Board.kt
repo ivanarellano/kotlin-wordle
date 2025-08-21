@@ -14,8 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextGranularity.Companion.Word
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import net.hubbu.kotlin_wordle.ui.LetterModel
 import net.hubbu.kotlin_wordle.ui.theme.GameColor
 import net.hubbu.kotlin_wordle.ui.theme.getColor
 
@@ -24,92 +26,6 @@ const val maxWordCount = 6
 
 enum class LetterType {
     Empty, Correct, Absent, Present
-}
-
-
-sealed class LetterModel(
-    open val char: Char,
-    open val bgColor: GameColor,
-    open val borderColor: GameColor,
-) {
-    abstract val type: LetterType
-
-    class Empty(
-        override val char: Char = ' ',
-        override val bgColor: GameColor = GameColor.Transparent,
-        override val borderColor: GameColor = GameColor.MaterialPrimary
-    ) : LetterModel(char, bgColor, borderColor) {
-        override val type: LetterType = LetterType.Empty
-    }
-
-    class Correct(
-        override val char: Char,
-        override val bgColor: GameColor = GameColor.Green,
-        override val borderColor: GameColor = GameColor.Transparent
-    ) : LetterModel(char, bgColor, borderColor) {
-        override val type: LetterType = LetterType.Correct
-    }
-
-    class Incorrect(
-        override val char: Char,
-        override val bgColor: GameColor = GameColor.Yellow,
-        override val borderColor: GameColor = GameColor.Transparent
-    ) : LetterModel(char, bgColor, borderColor) {
-        override val type: LetterType = LetterType.Absent
-    }
-
-    class Partial(
-        override val char: Char,
-        override val bgColor: GameColor = GameColor.MaterialPrimary,
-        override val borderColor: GameColor = GameColor.Transparent
-    ) : LetterModel(char, bgColor, borderColor) {
-        override val type: LetterType = LetterType.Present
-    }
-}
-
-@Composable
-fun Letter(model: LetterModel, modifier: Modifier = Modifier) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-            .width(62.dp)
-            .height(62.dp)
-            .border(width = 2.dp, color = model.borderColor.getColor())
-            .background(color = model.bgColor.getColor())
-            .wrapContentSize(),
-    ) {
-        if (model.type != LetterType.Empty)
-            Text(
-                text = "${model.char}",
-                style = MaterialTheme.typography.headlineLarge,
-            )
-    }
-}
-
-@Composable
-fun Word(word: String, targetMap: Map<Char, List<Int>>, modifier: Modifier = Modifier) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
-        for (i in word.indices) {
-            val letter = word[i]
-
-            if (letter.isWhitespace()) {
-                Letter(LetterModel.Empty())
-                continue
-            }
-
-            if (!targetMap.containsKey(letter)) {
-                Letter(LetterModel.Incorrect(char = letter))
-            }
-            else if (targetMap.getValue(letter).contains(i)) {
-                Letter(LetterModel.Correct(char = letter))
-            }
-            else {
-                Letter(LetterModel.Partial(char = letter))
-            }
-        }
-    }
 }
 
 @Composable
@@ -140,6 +56,51 @@ fun Board(target: String, guessedWords: List<String>, modifier: Modifier = Modif
         for (word in wordRows) {
             Word(word, targetMap)
         }
+    }
+}
+
+@Composable
+fun Word(word: String, targetMap: Map<Char, List<Int>>, modifier: Modifier = Modifier) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        for (i in word.indices) {
+            val letter = word[i]
+
+            if (letter.isWhitespace()) {
+                Letter(LetterModel.Empty())
+                continue
+            }
+
+            if (!targetMap.containsKey(letter)) {
+                Letter(LetterModel.Incorrect(char = letter))
+            }
+            else if (targetMap.getValue(letter).contains(i)) {
+                Letter(LetterModel.Correct(char = letter))
+            }
+            else {
+                Letter(LetterModel.Partial(char = letter))
+            }
+        }
+    }
+}
+
+@Composable
+fun Letter(model: LetterModel, modifier: Modifier = Modifier) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .width(62.dp)
+            .height(62.dp)
+            .border(width = 2.dp, color = model.borderColor.getColor())
+            .background(color = model.bgColor.getColor())
+            .wrapContentSize(),
+    ) {
+        if (model.type != LetterType.Empty)
+            Text(
+                text = "${model.char}",
+                style = MaterialTheme.typography.headlineLarge,
+            )
     }
 }
 
