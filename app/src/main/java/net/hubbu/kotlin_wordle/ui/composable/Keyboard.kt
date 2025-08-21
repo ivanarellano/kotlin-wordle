@@ -1,8 +1,8 @@
 package net.hubbu.kotlin_wordle.ui.composable
 
-import android.R.attr.name
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,10 +33,16 @@ enum class KeyboardIcon(val res: Int, val description: String) {
 }
 
 @Composable
-fun KeyButton(modifier: Modifier = Modifier, text: String? = null, icon: KeyboardIcon? = null) {
+fun KeyButton(
+    modifier: Modifier = Modifier,
+    text: String? = null,
+    icon: KeyboardIcon? = null,
+    onClick: () -> Unit
+) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
+            .clickable(onClick = onClick)
             .defaultMinSize(minWidth = 30.dp, minHeight = 56.dp)
             .widthIn(min = 0.dp, max = 48.dp)
             .clip(RoundedCornerShape(4.dp))
@@ -78,13 +84,13 @@ fun Keyboard(modifier: Modifier = Modifier) {
     fun KeyRow(keys: String, isBottomRow: Boolean = false) {
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             if (isBottomRow) {
-                KeyButton(text = "ENTER")
+                KeyButton(text = "ENTER", onClick = {})
             }
             for (char in keys) {
-                KeyButton(text = "$char")
+                KeyButton(text = "$char", onClick = {})
             }
             if (isBottomRow) {
-                KeyButton(icon = KeyboardIcon.Delete)
+                KeyButton(icon = KeyboardIcon.Delete, onClick = {})
             }
         }
     }
