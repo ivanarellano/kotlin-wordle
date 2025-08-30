@@ -26,10 +26,43 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import net.hubbu.kotlin_wordle.R
+import net.hubbu.kotlin_wordle.ui.KeyboardViewModel
 
 enum class KeyboardIcon(val res: Int, val description: String) {
     Delete(R.drawable.outline_backspace_24, "Backspace")
+}
+
+@Composable
+fun Keyboard(
+    modifier: Modifier = Modifier,
+    viewModel: KeyboardViewModel = viewModel()
+) {
+    @Composable
+    fun KeyRow(keys: String, isBottomRow: Boolean = false) {
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            if (isBottomRow) {
+                KeyButton(text = "ENTER", onClick = { viewModel.onEnter() })
+            }
+            for (char in keys) {
+                KeyButton(text = "$char", onClick = { viewModel.onKeyPress("$char" )})
+            }
+            if (isBottomRow) {
+                KeyButton(icon = KeyboardIcon.Delete, onClick = { viewModel.onDelete() })
+            }
+        }
+    }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
+        modifier = modifier.wrapContentSize(),
+    ) {
+        KeyRow("QWERTYUIOP")
+        KeyRow("ASDFGHJKL")
+        KeyRow(keys = "ZXCVBNM", isBottomRow = true)
+    }
 }
 
 @Composable
@@ -75,34 +108,6 @@ fun KeyButton(
                 contentScale = ContentScale.Fit
             )
         }
-    }
-}
-
-@Composable
-fun Keyboard(modifier: Modifier = Modifier) {
-    @Composable
-    fun KeyRow(keys: String, isBottomRow: Boolean = false) {
-        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            if (isBottomRow) {
-                KeyButton(text = "ENTER", onClick = {})
-            }
-            for (char in keys) {
-                KeyButton(text = "$char", onClick = {})
-            }
-            if (isBottomRow) {
-                KeyButton(icon = KeyboardIcon.Delete, onClick = {})
-            }
-        }
-    }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
-        modifier = modifier.wrapContentSize(),
-    ) {
-        KeyRow("QWERTYUIOP")
-        KeyRow("ASDFGHJKL")
-        KeyRow(keys = "ZXCVBNM", isBottomRow = true)
     }
 }
 
