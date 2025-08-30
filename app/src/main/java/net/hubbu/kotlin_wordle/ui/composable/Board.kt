@@ -23,15 +23,30 @@ import net.hubbu.kotlin_wordle.ui.theme.getColor
 
 // TODO
 const val maxWordCount = 6
+const val WORD_LENGTH = 5
 
 enum class LetterType {
     Empty, Correct, Absent, Present
 }
 
 @Composable
-fun Board(target: String, guessedWords: List<String>, modifier: Modifier = Modifier) {
-    val emptyRows = maxWordCount - guessedWords.size
-    val wordRows = guessedWords + List(emptyRows) { "     " }
+fun Board(
+    modifier: Modifier = Modifier,
+    target: String,
+    guessedWords: List<String>,
+    currentWord: String
+) {
+    val displayedRows = mutableListOf<String>()
+    displayedRows.addAll(guessedWords)
+
+    // Add currentWord if there's space for it (i.e., we haven't guessed maxWordCount words yet)
+    if (guessedWords.size < maxWordCount) {
+        displayedRows.add(currentWord)
+    }
+
+    // Add any remaining empty rows to fill up to maxWordCount
+    val emptyRowCount = maxWordCount - displayedRows.size
+    displayedRows.addAll(List(emptyRowCount) { " ".repeat(WORD_LENGTH) })
 
     fun getIndexedLetterMap(word: String): Map<Char, List<Int>> {
         val targetMap = mutableMapOf<Char, MutableList<Int>>().withDefault { mutableListOf() }
@@ -53,7 +68,7 @@ fun Board(target: String, guessedWords: List<String>, modifier: Modifier = Modif
         verticalArrangement = Arrangement.spacedBy(6.dp),
         modifier = modifier.wrapContentSize(),
     ) {
-        for (word in wordRows) {
+        for (word in displayedRows) {
             Word(word, targetMap)
         }
     }
@@ -64,8 +79,11 @@ fun Word(word: String, targetMap: Map<Char, List<Int>>, modifier: Modifier = Mod
     Row(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        for (i in word.indices) {
-            val letter = word[i]
+        // Ensure the word displayed has the correct length, padding with spaces if necessary
+        val displayableWord = word.padEnd(WORD_LENGTH, ' ')
+
+        for (i in displayableWord.indices) {
+            val letter = displayableWord[i]
 
             if (letter.isWhitespace()) {
                 Letter(LetterModel.Empty())
@@ -114,5 +132,6 @@ fun BoardPreview() {
             "TABLE",
             "CHAIR",
             "PLANT",
-        ))
+        ),
+        currentWord = "AUD  ")
 }
