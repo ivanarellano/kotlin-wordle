@@ -16,13 +16,33 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import net.hubbu.kotlin_wordle.ui.KeyboardViewModel
 import net.hubbu.kotlin_wordle.ui.theme.KotlinWordleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameScreen(modifier: Modifier = Modifier) {
+fun GameScreen(
+    modifier: Modifier = Modifier,
+    keyboardViewModel: KeyboardViewModel = viewModel()
+) {
+    // Collect the current word from the ViewModel
+    // Make sure your KeyboardViewModel.currentWord is a StateFlow
+    val currentWord by keyboardViewModel.currentWord.collectAsStateWithLifecycle()
+
+    // TODO: Move target and guessed words to ViewModel
+    val targetWord = "AUDIO"
+    val guessedWords = listOf(
+        "ABOUT",
+        "TABLE",
+        "CHAIR",
+        "PLANT",
+    )
+
     Scaffold(
         modifier,
         topBar = {
@@ -55,16 +75,12 @@ fun GameScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(innerPadding)
         ) {
             Board(
-                target = "AUDIO",
-                guessedWords = listOf(
-                    "ABOUT",
-                    "TABLE",
-                    "CHAIR",
-                    "PLANT",
-                ),
+                target = targetWord,
+                guessedWords = guessedWords,
+                currentWord = currentWord,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(2.5f)
+                    .weight(2.5f),
             )
             Keyboard(
                 modifier = Modifier
