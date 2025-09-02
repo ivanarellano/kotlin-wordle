@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.update
 class KeyboardViewModel : ViewModel() {
     // TODO: Extract into a class
     val wordLength = 5
-    val currentWord: MutableStateFlow<String> = MutableStateFlow(" ".repeat(wordLength))
+    val currentWord: MutableStateFlow<String> = MutableStateFlow("")
 
     // When a text key is pressed
     fun onKeyPress(keyText: String) {
@@ -31,6 +31,6 @@ class KeyboardViewModel : ViewModel() {
         Log.d("KeyboardViewModel", "Enter pressed")
         // TODO: Validate the word (currently clears)
         // guessedWords.update { it + _currentWord.value }
-        currentWord.value = " ".repeat(wordLength)
+        currentWord.value = ""
     }
 }
