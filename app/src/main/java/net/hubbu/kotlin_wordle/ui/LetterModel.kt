@@ -41,4 +41,12 @@ sealed class LetterModel(
     ) : LetterModel(char, bgColor, borderColor) {
         override val type: LetterType = LetterType.Present
     }
+
+    class Guess(
+        override val char: Char,
+        override val bgColor: GameColor = GameColor.Transparent,
+        override val borderColor: GameColor = GameColor.MaterialPrimary
+    ) : LetterModel(char, bgColor, borderColor) {
+        override val type: LetterType = LetterType.Guess
+    }
 }

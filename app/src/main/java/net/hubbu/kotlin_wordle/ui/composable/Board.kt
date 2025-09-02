@@ -26,7 +26,7 @@ const val maxWordCount = 6
 const val WORD_LENGTH = 5
 
 enum class LetterType {
-    Empty, Correct, Absent, Present
+    Empty, Correct, Absent, Present, Guess
 }
 
 @Composable
@@ -94,7 +94,10 @@ fun Word(
             if (letter.isWhitespace()) {
                 Letter(LetterModel.Empty())
             }
-            else if (isCurrentWord || !targetMap.containsKey(letter)) {
+            else if (isCurrentWord) {
+                Letter(LetterModel.Guess(char = letter))
+            }
+            else if (!targetMap.containsKey(letter)) {
                 Letter(LetterModel.Absent(char = letter))
             }
             else if (targetMap.getValue(letter).contains(i)) {
