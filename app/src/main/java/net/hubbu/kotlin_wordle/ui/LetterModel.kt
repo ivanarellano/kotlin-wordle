@@ -26,17 +26,17 @@ sealed class LetterModel(
         override val type: LetterType = LetterType.Correct
     }
 
-    class Incorrect(
+    class Absent(
         override val char: Char,
-        override val bgColor: GameColor = GameColor.Yellow,
+        override val bgColor: GameColor = GameColor.MaterialPrimary,
         override val borderColor: GameColor = GameColor.Transparent
     ) : LetterModel(char, bgColor, borderColor) {
         override val type: LetterType = LetterType.Absent
     }
 
-    class Partial(
+    class Present(
         override val char: Char,
-        override val bgColor: GameColor = GameColor.MaterialPrimary,
+        override val bgColor: GameColor = GameColor.Yellow,
         override val borderColor: GameColor = GameColor.Transparent
     ) : LetterModel(char, bgColor, borderColor) {
         override val type: LetterType = LetterType.Present
