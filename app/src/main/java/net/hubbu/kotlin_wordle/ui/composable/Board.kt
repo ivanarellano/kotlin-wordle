@@ -1,5 +1,6 @@
 package net.hubbu.kotlin_wordle.ui.composable
 
+import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +19,6 @@ import androidx.compose.ui.text.TextGranularity.Companion.Word
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.hubbu.kotlin_wordle.ui.LetterModel
-import net.hubbu.kotlin_wordle.ui.theme.GameColor
 import net.hubbu.kotlin_wordle.ui.theme.getColor
 
 // TODO
@@ -68,14 +68,20 @@ fun Board(
         verticalArrangement = Arrangement.spacedBy(6.dp),
         modifier = modifier.wrapContentSize(),
     ) {
-        for (word in displayedRows) {
-            Word(word, targetMap)
+        for (i in displayedRows.indices) {
+            val isCurrentWord = i == guessedWords.size
+            Word(displayedRows[i], targetMap, isCurrentWord)
         }
     }
 }
 
 @Composable
-fun Word(word: String, targetMap: Map<Char, List<Int>>, modifier: Modifier = Modifier) {
+fun Word(
+    word: String,
+    targetMap: Map<Char, List<Int>>,
+    isCurrentWord: Boolean,
+    modifier: Modifier = Modifier
+) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
@@ -87,17 +93,15 @@ fun Word(word: String, targetMap: Map<Char, List<Int>>, modifier: Modifier = Mod
 
             if (letter.isWhitespace()) {
                 Letter(LetterModel.Empty())
-                continue
             }
-
-            if (!targetMap.containsKey(letter)) {
-                Letter(LetterModel.Incorrect(char = letter))
+            else if (isCurrentWord || !targetMap.containsKey(letter)) {
+                Letter(LetterModel.Absent(char = letter))
             }
             else if (targetMap.getValue(letter).contains(i)) {
                 Letter(LetterModel.Correct(char = letter))
             }
             else {
-                Letter(LetterModel.Partial(char = letter))
+                Letter(LetterModel.Present(char = letter))
             }
         }
     }
