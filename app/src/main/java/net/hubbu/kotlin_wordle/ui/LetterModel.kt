@@ -11,10 +11,9 @@ sealed class LetterModel(
     abstract val type: LetterType
 
     class Empty(
-        override val char: Char = ' ',
         override val bgColor: GameColor = GameColor.Transparent,
         override val borderColor: GameColor = GameColor.MaterialPrimary
-    ) : LetterModel(char, bgColor, borderColor) {
+    ) : LetterModel(char = ' ', bgColor, borderColor) {
         override val type: LetterType = LetterType.Empty
     }
 
@@ -28,7 +27,7 @@ sealed class LetterModel(
 
     class Absent(
         override val char: Char,
-        override val bgColor: GameColor = GameColor.MaterialPrimary,
+        override val bgColor: GameColor = GameColor.Grey,
         override val borderColor: GameColor = GameColor.Transparent
     ) : LetterModel(char, bgColor, borderColor) {
         override val type: LetterType = LetterType.Absent
@@ -46,6 +45,14 @@ sealed class LetterModel(
         override val char: Char,
         override val bgColor: GameColor = GameColor.Transparent,
         override val borderColor: GameColor = GameColor.MaterialPrimary
+    ) : LetterModel(char, bgColor, borderColor) {
+        override val type: LetterType = LetterType.Guess
+    }
+
+    class DefaultKey(
+        override val char: Char = ' ',
+        override val bgColor: GameColor = GameColor.MaterialPrimary,
+        override val borderColor: GameColor = GameColor.Transparent
     ) : LetterModel(char, bgColor, borderColor) {
         override val type: LetterType = LetterType.Guess
     }

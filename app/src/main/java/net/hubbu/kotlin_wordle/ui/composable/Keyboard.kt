@@ -1,5 +1,6 @@
 package net.hubbu.kotlin_wordle.ui.composable
 
+import android.util.Log.i
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.hubbu.kotlin_wordle.R
 import net.hubbu.kotlin_wordle.ui.KeyboardViewModel
+import net.hubbu.kotlin_wordle.ui.LetterModel
+import net.hubbu.kotlin_wordle.ui.theme.getColor
 
 enum class KeyboardIcon(val res: Int, val description: String) {
     Delete(R.drawable.outline_backspace_24, "Backspace")
@@ -36,18 +39,29 @@ enum class KeyboardIcon(val res: Int, val description: String) {
 
 @Composable
 fun Keyboard(
+    targetMap: Map<Char, List<Int>>,
     modifier: Modifier = Modifier,
+    guessedWords: List<String> = emptyList(),
     viewModel: KeyboardViewModel = viewModel()
 ) {
+    val keyMatches = viewModel.getKeyMatchStatus(targetMap, guessedWords)
+
     @Composable
     fun KeyRow(keys: String, isBottomRow: Boolean = false) {
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             if (isBottomRow) {
                 KeyButton(text = "ENTER", onClick = { viewModel.onEnter() })
             }
-            for (char in keys) {
-                KeyButton(text = "$char", onClick = { viewModel.onKeyPress("$char" )})
+
+            for (letter in keys) {
+                val model = keyMatches[letter] ?: LetterModel.DefaultKey(char = letter)
+                KeyButton(
+                    model = model,
+                    text = "$letter",
+                    onClick = { viewModel.onKeyPress("$letter" )}
+                )
             }
+
             if (isBottomRow) {
                 KeyButton(icon = KeyboardIcon.Delete, onClick = { viewModel.onDelete() })
             }
@@ -68,6 +82,7 @@ fun Keyboard(
 @Composable
 fun KeyButton(
     modifier: Modifier = Modifier,
+    model: LetterModel = LetterModel.DefaultKey(),
     text: String? = null,
     icon: KeyboardIcon? = null,
     onClick: () -> Unit
@@ -79,7 +94,7 @@ fun KeyButton(
             .defaultMinSize(minWidth = 30.dp, minHeight = 56.dp)
             .widthIn(min = 0.dp, max = 48.dp)
             .clip(RoundedCornerShape(4.dp))
-            .background(color = MaterialTheme.colorScheme.primaryContainer)
+            .background(color = model.bgColor.getColor())
             .padding(horizontal = 4.dp)
             .wrapContentSize(),
     ) {
@@ -114,5 +129,21 @@ fun KeyButton(
 @Preview(showBackground = true)
 @Composable
 fun KeyboardPreview() {
-    Keyboard()
+    Keyboard(
+        // TODO: Replace targetMap with targetWord
+//        targetWord = "AUDIO",
+        targetMap = mapOf(
+            'A' to listOf(0),
+            'U' to listOf(1),
+            'D' to listOf(2),
+            'I' to listOf(3),
+            'O' to listOf(4),
+        ),
+        guessedWords = listOf(
+            "ABOUT",
+            "TABLE",
+            "CHAIR",
+            "PLANT",
+        ),
+    )
 }

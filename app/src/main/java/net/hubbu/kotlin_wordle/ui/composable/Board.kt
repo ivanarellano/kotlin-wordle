@@ -48,19 +48,6 @@ fun Board(
     val emptyRowCount = maxWordCount - displayedRows.size
     displayedRows.addAll(List(emptyRowCount) { " ".repeat(WORD_LENGTH) })
 
-    fun getIndexedLetterMap(word: String): Map<Char, List<Int>> {
-        val targetMap = mutableMapOf<Char, MutableList<Int>>().withDefault { mutableListOf() }
-
-        for (i in word.indices) {
-            val letter = word[i]
-            val list = targetMap.getValue(letter)
-
-            list.add(i)
-            targetMap[letter] = list
-        }
-        return targetMap.toMap()
-    }
-
     val targetMap = getIndexedLetterMap(word = target)
 
     Column(
@@ -140,5 +127,6 @@ fun BoardPreview() {
             "CHAIR",
             "PLANT",
         ),
-        currentWord = "AUD  ")
+        currentWord = "AUD"
+    )
 }

@@ -83,12 +83,28 @@ fun GameScreen(
                     .weight(2.5f),
             )
             Keyboard(
+                targetMap = getIndexedLetterMap(targetWord),
+                guessedWords = guessedWords,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
             )
         }
     }
+}
+
+// Example: word = "APPLE", output = {A=[0], P=[1, 4], L=[2], E=[3]}
+fun getIndexedLetterMap(word: String): Map<Char, List<Int>> {
+    val targetMap = mutableMapOf<Char, MutableList<Int>>().withDefault { mutableListOf() }
+
+    for (i in word.indices) {
+        val letter = word[i]
+        val list = targetMap.getValue(letter)
+
+        list.add(i)
+        targetMap[letter] = list
+    }
+    return targetMap.toMap()
 }
 
 @Preview(showBackground = true)
