@@ -17,7 +17,7 @@ class GameViewModel : ViewModel() {
     val uiState: StateFlow<GameUiState> = _uiState.asStateFlow()
 
     // TODO: Use a real word list
-    val targetWordMap: Map<Char, List<Int>> by lazy {
+    val targetWordMatches: Map<Char, List<Int>> by lazy {
         getIndexedLetterMap("AUDIO")
     }
 
@@ -59,13 +59,13 @@ class GameViewModel : ViewModel() {
             for (i in word.indices) {
                 val letter = word[i]
 
-                keyMatches[word[i]] = if (!targetWordMap.containsKey(letter)) {
+                keyMatches[word[i]] = if (!targetWordMatches.containsKey(letter)) {
                     LetterModel.Absent(char = letter)
                 }
-                else if (targetWordMap.getValue(letter).contains(i)) {
+                else if (targetWordMatches.getValue(letter).contains(i)) {
                     LetterModel.Correct(char = letter)
                 }
-                else if (targetWordMap.containsKey(letter) && !targetWordMap.getValue(letter).contains(i)) {
+                else if (targetWordMatches.containsKey(letter) && !targetWordMatches.getValue(letter).contains(i)) {
                     LetterModel.Present(char = letter)
                 }
                 else {

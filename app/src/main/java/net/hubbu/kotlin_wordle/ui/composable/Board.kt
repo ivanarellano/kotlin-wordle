@@ -27,7 +27,7 @@ enum class LetterType {
 fun Board(
     guessedWords: List<String>,
     currentWord: String,
-    targetWordMap: Map<Char, List<Int>>,
+    targetWordMatches: Map<Char, List<Int>>,
     maxWordLength: Int,
     maxWordCount: Int,
     modifier: Modifier = Modifier,
@@ -56,7 +56,7 @@ fun Board(
             val isCurrentWord = i == guessedWords.size
             Word(
                 displayedWords[i],
-                targetWordMap,
+                targetWordMatches,
                 isCurrentWord = isCurrentWord,
             )
         }
@@ -118,7 +118,7 @@ fun Letter(model: LetterModel, modifier: Modifier = Modifier) {
 @Composable
 fun BoardPreview() {
     Board(
-        targetWordMap = mapOf(
+        targetWordMatches = mapOf(
             'A' to listOf(0),
             'U' to listOf(1),
             'D' to listOf(2),

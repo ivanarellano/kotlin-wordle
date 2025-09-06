@@ -71,7 +71,7 @@ fun GameScreen(
             Board(
                 guessedWords = guessedWords,
                 currentWord = currentWord,
-                targetWordMap = viewModel.targetWordMap,
+                targetWordMatches = viewModel.targetWordMatches,
                 maxWordLength = viewModel.maxWordLength,
                 maxWordCount = viewModel.maxWordCount,
                 modifier = Modifier
