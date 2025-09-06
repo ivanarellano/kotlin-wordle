@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextGranularity.Companion.Word
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import net.hubbu.kotlin_wordle.ui.LetterModel
+import net.hubbu.kotlin_wordle.data.LetterModel
 import net.hubbu.kotlin_wordle.ui.theme.getColor
 
 // TODO

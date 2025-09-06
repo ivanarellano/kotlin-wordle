@@ -1,4 +1,4 @@
-package net.hubbu.kotlin_wordle.ui
+package net.hubbu.kotlin_wordle.data
 
 import net.hubbu.kotlin_wordle.ui.composable.LetterType
 import net.hubbu.kotlin_wordle.ui.theme.GameColor

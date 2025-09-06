@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import net.hubbu.kotlin_wordle.ui.composable.Letter
+import net.hubbu.kotlin_wordle.data.LetterModel
 
 class KeyboardViewModel : ViewModel() {
     // TODO: Extract into a class

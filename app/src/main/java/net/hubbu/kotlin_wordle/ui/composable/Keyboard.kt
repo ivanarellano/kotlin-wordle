@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.hubbu.kotlin_wordle.R
 import net.hubbu.kotlin_wordle.ui.KeyboardViewModel
-import net.hubbu.kotlin_wordle.ui.LetterModel
+import net.hubbu.kotlin_wordle.data.LetterModel
 import net.hubbu.kotlin_wordle.ui.theme.getColor
 
 enum class KeyboardIcon(val res: Int, val description: String) {
