@@ -26,9 +26,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import net.hubbu.kotlin_wordle.R
-import net.hubbu.kotlin_wordle.ui.GameScreenViewModel
 import net.hubbu.kotlin_wordle.data.LetterModel
 import net.hubbu.kotlin_wordle.ui.theme.getColor
 
@@ -38,18 +36,17 @@ enum class KeyboardIcon(val res: Int, val description: String) {
 
 @Composable
 fun Keyboard(
-    targetMap: Map<Char, List<Int>>,
+    keyMatches: Map<Char, LetterModel>,
     modifier: Modifier = Modifier,
-    guessedWords: List<String> = emptyList(),
-    viewModel: GameScreenViewModel = viewModel()
+    onEnter: () -> Unit = {},
+    onDelete: () -> Unit = {},
+    onKeyPress: (String) -> Unit = {},
 ) {
-    val keyMatches = viewModel.getKeyMatchStatus(targetMap, guessedWords)
-
     @Composable
     fun KeyRow(keys: String, isBottomRow: Boolean = false) {
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             if (isBottomRow) {
-                KeyButton(text = "ENTER", onClick = { viewModel.onEnter() })
+                KeyButton(text = "ENTER", onClick = { onEnter() })
             }
 
             for (letter in keys) {
@@ -57,12 +54,12 @@ fun Keyboard(
                 KeyButton(
                     model = model,
                     text = "$letter",
-                    onClick = { viewModel.onKeyPress("$letter" )}
+                    onClick = { onKeyPress("$letter" )}
                 )
             }
 
             if (isBottomRow) {
-                KeyButton(icon = KeyboardIcon.Delete, onClick = { viewModel.onDelete() })
+                KeyButton(icon = KeyboardIcon.Delete, onClick = { onDelete() })
             }
         }
     }
@@ -129,9 +126,7 @@ fun KeyButton(
 @Composable
 fun KeyboardPreview() {
     Keyboard(
-        // TODO: Replace targetMap with targetWord
-//        targetWord = "AUDIO",
-        targetMap = mapOf(
+        targetWordMap = mapOf(
             'A' to listOf(0),
             'U' to listOf(1),
             'D' to listOf(2),

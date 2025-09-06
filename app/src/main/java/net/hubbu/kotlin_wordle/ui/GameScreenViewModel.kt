@@ -13,6 +13,19 @@ class GameScreenViewModel : ViewModel() {
     val maxWordCount: Int
         get() = 6
 
+    // TODO: Use a real word list
+    val targetWordMap: Map<Char, List<Int>> by lazy {
+        getIndexedLetterMap("AUDIO")
+    }
+
+    // TODO: Use real guessed words
+    val guessedWords = listOf(
+        "ABOUT",
+        "TABLE",
+        "CHAIR",
+        "PLANT",
+    )
+
     val currentWord: MutableStateFlow<String> = MutableStateFlow("")
 
     // When a text key is pressed
@@ -40,20 +53,20 @@ class GameScreenViewModel : ViewModel() {
     }
 
     // Given a target word and guessed words, return a map of LetterModel for each matched letter
-    fun getKeyMatchStatus(targetMap: Map<Char, List<Int>>, guessedWords: List<String>): Map<Char, LetterModel> {
+    fun getKeyMatchStatus(): Map<Char, LetterModel> {
         val keyMatches = mutableMapOf<Char, LetterModel>()
 
         for (word in guessedWords) {
             for (i in word.indices) {
                 val letter = word[i]
 
-                keyMatches[word[i]] = if (!targetMap.containsKey(letter)) {
+                keyMatches[word[i]] = if (!targetWordMap.containsKey(letter)) {
                     LetterModel.Absent(char = letter)
                 }
-                else if (targetMap.getValue(letter).contains(i)) {
+                else if (targetWordMap.getValue(letter).contains(i)) {
                     LetterModel.Correct(char = letter)
                 }
-                else if (targetMap.containsKey(letter) && !targetMap.getValue(letter).contains(i)) {
+                else if (targetWordMap.containsKey(letter) && !targetWordMap.getValue(letter).contains(i)) {
                     LetterModel.Present(char = letter)
                 }
                 else {
@@ -62,5 +75,19 @@ class GameScreenViewModel : ViewModel() {
             }
         }
         return keyMatches
+    }
+
+    // Example: word = "APPLE", output = {A=[0], P=[1, 4], L=[2], E=[3]}
+    private fun getIndexedLetterMap(word: String): Map<Char, List<Int>> {
+        val targetMap = mutableMapOf<Char, MutableList<Int>>().withDefault { mutableListOf() }
+
+        for (i in word.indices) {
+            val letter = word[i]
+            val list = targetMap.getValue(letter)
+
+            list.add(i)
+            targetMap[letter] = list
+        }
+        return targetMap.toMap()
     }
 }

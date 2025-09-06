@@ -16,9 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import net.hubbu.kotlin_wordle.data.LetterModel
-import net.hubbu.kotlin_wordle.ui.GameScreenViewModel
 import net.hubbu.kotlin_wordle.ui.theme.getColor
 
 enum class LetterType {
@@ -27,27 +25,26 @@ enum class LetterType {
 
 @Composable
 fun Board(
-    modifier: Modifier = Modifier,
-    target: String,
+    targetWordMap: Map<Char, List<Int>>,
     guessedWords: List<String>,
     currentWord: String,
-    viewModel: GameScreenViewModel = viewModel()
+    maxWordCount: Int,
+    wordLength: Int,
+    modifier: Modifier = Modifier,
 ) {
     val displayedRows = mutableListOf<String>()
     displayedRows.addAll(guessedWords)
 
     // Add currentWord if there's space for it (i.e., we haven't guessed maxWordCount words yet)
-    if (guessedWords.size < viewModel.maxWordCount) {
+    if (guessedWords.size < maxWordCount) {
         displayedRows.add(currentWord)
     }
 
     // Add any remaining empty rows to fill up to maxWordCount
-    val emptyRowCount = viewModel.maxWordCount - displayedRows.size
+    val emptyRowCount = maxWordCount - displayedRows.size
     displayedRows.addAll(
-        List(emptyRowCount) { " ".repeat(viewModel.wordLength) }
+        List(emptyRowCount) { " ".repeat(wordLength) }
     )
-
-    val targetMap = getIndexedLetterMap(word = target)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -58,8 +55,8 @@ fun Board(
             val isCurrentWord = i == guessedWords.size
             Word(
                 displayedRows[i],
-                viewModel.wordLength,
-                targetMap,
+                wordLength,
+                targetWordMap,
                 isCurrentWord,
             )
         }
@@ -125,13 +122,21 @@ fun Letter(model: LetterModel, modifier: Modifier = Modifier) {
 @Composable
 fun BoardPreview() {
     Board(
-        target = "AUDIO",
+        targetWordMap = mapOf(
+            'A' to listOf(0),
+            'U' to listOf(1),
+            'D' to listOf(2),
+            'I' to listOf(3),
+            'O' to listOf(4),
+        ),
         guessedWords = listOf(
             "ABOUT",
             "TABLE",
             "CHAIR",
             "PLANT",
         ),
-        currentWord = "AUD"
+        currentWord = "AUD",
+        maxWordCount = 6,
+        wordLength = 5,
     )
 }

@@ -28,20 +28,13 @@ import net.hubbu.kotlin_wordle.ui.theme.KotlinWordleTheme
 @Composable
 fun GameScreen(
     modifier: Modifier = Modifier,
-    keyboardViewModel: GameScreenViewModel = viewModel()
+    viewModel: GameScreenViewModel = viewModel()
 ) {
     // Collect the current word from the ViewModel
     // Make sure your KeyboardViewModel.currentWord is a StateFlow
-    val currentWord by keyboardViewModel.currentWord.collectAsStateWithLifecycle()
+    val currentWord by viewModel.currentWord.collectAsStateWithLifecycle()
 
-    // TODO: Move target and guessed words to ViewModel
-    val targetWord = "AUDIO"
-    val guessedWords = listOf(
-        "ABOUT",
-        "TABLE",
-        "CHAIR",
-        "PLANT",
-    )
+    val keyMatches = viewModel.getKeyMatchStatus()
 
     Scaffold(
         modifier,
@@ -75,36 +68,23 @@ fun GameScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             Board(
-                target = targetWord,
-                guessedWords = guessedWords,
                 currentWord = currentWord,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(2.5f),
+                targetWordMap = viewModel.targetWordMap,
+                guessedWords = viewModel.guessedWords,
+                maxWordCount = viewModel.maxWordCount,
+                wordLength = viewModel.wordLength,
             )
             Keyboard(
-                targetMap = getIndexedLetterMap(targetWord),
-                guessedWords = guessedWords,
+                keyMatches,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
             )
         }
     }
-}
-
-// Example: word = "APPLE", output = {A=[0], P=[1, 4], L=[2], E=[3]}
-fun getIndexedLetterMap(word: String): Map<Char, List<Int>> {
-    val targetMap = mutableMapOf<Char, MutableList<Int>>().withDefault { mutableListOf() }
-
-    for (i in word.indices) {
-        val letter = word[i]
-        val list = targetMap.getValue(letter)
-
-        list.add(i)
-        targetMap[letter] = list
-    }
-    return targetMap.toMap()
 }
 
 @Preview(showBackground = true)
