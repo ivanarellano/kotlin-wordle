@@ -25,39 +25,39 @@ enum class LetterType {
 
 @Composable
 fun Board(
-    targetWordMap: Map<Char, List<Int>>,
     guessedWords: List<String>,
     currentWord: String,
+    targetWordMap: Map<Char, List<Int>>,
+    maxWordLength: Int,
     maxWordCount: Int,
-    wordLength: Int,
     modifier: Modifier = Modifier,
 ) {
-    val displayedRows = mutableListOf<String>()
-    displayedRows.addAll(guessedWords)
-
-    // Add currentWord if there's space for it (i.e., we haven't guessed maxWordCount words yet)
-    if (guessedWords.size < maxWordCount) {
-        displayedRows.add(currentWord)
-    }
-
-    // Add any remaining empty rows to fill up to maxWordCount
-    val emptyRowCount = maxWordCount - displayedRows.size
-    displayedRows.addAll(
-        List(emptyRowCount) { " ".repeat(wordLength) }
-    )
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp),
         modifier = modifier.wrapContentSize(),
     ) {
-        for (i in displayedRows.indices) {
+        val displayedWords = mutableListOf<String>()
+        displayedWords.addAll(guessedWords)
+
+        // Add currentWord if there's space for it (i.e., we haven't guessed maxWordCount words yet)
+        if (guessedWords.size < maxWordCount) {
+            // Ensure the word displayed has the correct length, padding with spaces if necessary
+            displayedWords.add(currentWord.padEnd(maxWordLength, ' '))
+        }
+
+        // Add any remaining empty rows to fill up to MAX_WORD_COUNT
+        val emptyRowCount = maxWordCount - displayedWords.size
+        displayedWords.addAll(
+            List(emptyRowCount) { " ".repeat(maxWordLength) }
+        )
+
+        for (i in displayedWords.indices) {
             val isCurrentWord = i == guessedWords.size
             Word(
-                displayedRows[i],
-                wordLength,
+                displayedWords[i],
                 targetWordMap,
-                isCurrentWord,
+                isCurrentWord = isCurrentWord,
             )
         }
     }
@@ -66,19 +66,15 @@ fun Board(
 @Composable
 fun Word(
     word: String,
-    maxWordLength: Int,
-    targetMap: Map<Char, List<Int>>,
-    isCurrentWord: Boolean,
-    modifier: Modifier = Modifier
+    targetWordMap: Map<Char, List<Int>>,
+    modifier: Modifier = Modifier,
+    isCurrentWord: Boolean = false,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        // Ensure the word displayed has the correct length, padding with spaces if necessary
-        val displayableWord = word.padEnd(maxWordLength, ' ')
-
-        for (i in displayableWord.indices) {
-            val letter = displayableWord[i]
+        for (i in word.indices) {
+            val letter = word[i]
 
             if (letter.isWhitespace()) {
                 Letter(LetterModel.Empty())
@@ -86,10 +82,10 @@ fun Word(
             else if (isCurrentWord) {
                 Letter(LetterModel.Guess(char = letter))
             }
-            else if (!targetMap.containsKey(letter)) {
+            else if (!targetWordMap.containsKey(letter)) {
                 Letter(LetterModel.Absent(char = letter))
             }
-            else if (targetMap.getValue(letter).contains(i)) {
+            else if (targetWordMap.getValue(letter).contains(i)) {
                 Letter(LetterModel.Correct(char = letter))
             }
             else {
@@ -136,7 +132,7 @@ fun BoardPreview() {
             "PLANT",
         ),
         currentWord = "AUD",
+        maxWordLength = 5,
         maxWordCount = 6,
-        wordLength = 5,
     )
 }

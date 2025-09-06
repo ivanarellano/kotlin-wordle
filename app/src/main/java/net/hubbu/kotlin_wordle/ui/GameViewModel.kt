@@ -3,60 +3,59 @@ package net.hubbu.kotlin_wordle.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import net.hubbu.kotlin_wordle.data.GameUiState
 import net.hubbu.kotlin_wordle.data.LetterModel
 
-class GameScreenViewModel : ViewModel() {
-    val wordLength: Int
-        get() = 5
+class GameViewModel : ViewModel() {
+    val maxWordLength: Int = 5
+    val maxWordCount: Int = 6
 
-    val maxWordCount: Int
-        get() = 6
+    private val _uiState = MutableStateFlow(GameUiState())
+    val uiState: StateFlow<GameUiState> = _uiState.asStateFlow()
 
     // TODO: Use a real word list
     val targetWordMap: Map<Char, List<Int>> by lazy {
         getIndexedLetterMap("AUDIO")
     }
 
-    // TODO: Use real guessed words
-    val guessedWords = listOf(
-        "ABOUT",
-        "TABLE",
-        "CHAIR",
-        "PLANT",
-    )
-
-    val currentWord: MutableStateFlow<String> = MutableStateFlow("")
-
-    // When a text key is pressed
+    // When a key is pressed
     fun onKeyPress(keyText: String) {
-        Log.d("KeyboardViewModel", "Key pressed: $keyText")
-        if (currentWord.value.length < wordLength) {
-            currentWord.update { currentWord.value + keyText }
+        if (_uiState.value.currentWord.length < maxWordLength) {
+            _uiState.update { currentState ->
+                currentState.copy(currentWord = currentState.currentWord + keyText)
+            }
         }
     }
 
     // When the delete key is pressed
     fun onDelete() {
-        Log.d("KeyboardViewModel", "Delete pressed")
-        if (currentWord.value.isNotEmpty()) {
-            currentWord.update { currentWord.value.dropLast(1) }
+        if (_uiState.value.currentWord.isNotEmpty()) {
+            _uiState.update { currentState ->
+                currentState.copy(currentWord = currentState.currentWord.dropLast(1))
+            }
         }
     }
 
     // When the enter key is pressed
     fun onEnter() {
-        Log.d("KeyboardViewModel", "Enter pressed")
+        Log.d("GameViewModel", "Enter pressed")
         // TODO: Validate the word (currently clears)
-        // guessedWords.update { it + _currentWord.value }
-        currentWord.value = ""
+        _uiState.update { currentState ->
+            currentState.copy(
+                currentWord = "",
+//                guessedWords = currentState.guessedWords + currentState.currentWord
+            )
+        }
     }
 
     // Given a target word and guessed words, return a map of LetterModel for each matched letter
     fun getKeyMatchStatus(): Map<Char, LetterModel> {
         val keyMatches = mutableMapOf<Char, LetterModel>()
 
-        for (word in guessedWords) {
+        for (word in _uiState.value.guessedWords) {
             for (i in word.indices) {
                 val letter = word[i]
 

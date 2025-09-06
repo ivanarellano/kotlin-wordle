@@ -21,17 +21,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import net.hubbu.kotlin_wordle.ui.GameScreenViewModel
+import kotlinx.coroutines.flow.map
+import net.hubbu.kotlin_wordle.ui.GameViewModel
 import net.hubbu.kotlin_wordle.ui.theme.KotlinWordleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameScreen(
     modifier: Modifier = Modifier,
-    viewModel: GameScreenViewModel = viewModel()
+    viewModel: GameViewModel = viewModel()
 ) {
-    // Collect the current word from the ViewModel
-    val currentWord by viewModel.currentWord.collectAsStateWithLifecycle()
+    val currentWord by viewModel.uiState.map { it.currentWord }
+        .collectAsStateWithLifecycle(initialValue = "")
+
+    val guessedWords by viewModel.uiState.map { it.guessedWords }
+        .collectAsStateWithLifecycle(initialValue = emptyList())
 
     Scaffold(
         modifier,
@@ -45,13 +49,13 @@ fun GameScreen(
                     Text("Wordle")
                 },
                 actions = {
-                    IconButton(onClick = { /* do something */ }) {
+                    IconButton(onClick = { /* TODO: do something */ }) {
                         Icon(
                             imageVector = Icons.Filled.Info,
                             contentDescription = "Instructions"
                         )
                     }
-                    IconButton(onClick = { /* do something */ }) {
+                    IconButton(onClick = { /* TODO: do something */ }) {
                         Icon(
                             imageVector = Icons.Filled.Settings,
                             contentDescription = "Settings"
@@ -65,14 +69,14 @@ fun GameScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             Board(
+                guessedWords = guessedWords,
                 currentWord = currentWord,
+                targetWordMap = viewModel.targetWordMap,
+                maxWordLength = viewModel.maxWordLength,
+                maxWordCount = viewModel.maxWordCount,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(2.5f),
-                targetWordMap = viewModel.targetWordMap,
-                guessedWords = viewModel.guessedWords,
-                maxWordCount = viewModel.maxWordCount,
-                wordLength = viewModel.wordLength,
             )
             Keyboard(
                 keyMatches = viewModel.getKeyMatchStatus(),
