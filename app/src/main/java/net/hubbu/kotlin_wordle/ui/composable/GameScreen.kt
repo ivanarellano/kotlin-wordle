@@ -31,10 +31,7 @@ fun GameScreen(
     viewModel: GameScreenViewModel = viewModel()
 ) {
     // Collect the current word from the ViewModel
-    // Make sure your KeyboardViewModel.currentWord is a StateFlow
     val currentWord by viewModel.currentWord.collectAsStateWithLifecycle()
-
-    val keyMatches = viewModel.getKeyMatchStatus()
 
     Scaffold(
         modifier,
@@ -78,7 +75,10 @@ fun GameScreen(
                 wordLength = viewModel.wordLength,
             )
             Keyboard(
-                keyMatches,
+                keyMatches = viewModel.getKeyMatchStatus(),
+                onKeyPress = viewModel::onKeyPress,
+                onDelete = viewModel::onDelete,
+                onEnter = viewModel::onEnter,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)

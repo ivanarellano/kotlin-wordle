@@ -126,18 +126,10 @@ fun KeyButton(
 @Composable
 fun KeyboardPreview() {
     Keyboard(
-        targetWordMap = mapOf(
-            'A' to listOf(0),
-            'U' to listOf(1),
-            'D' to listOf(2),
-            'I' to listOf(3),
-            'O' to listOf(4),
-        ),
-        guessedWords = listOf(
-            "ABOUT",
-            "TABLE",
-            "CHAIR",
-            "PLANT",
-        ),
+        keyMatches = mapOf(
+            'A' to LetterModel.Absent('A'),
+            'U' to LetterModel.Present('U'),
+            'D' to LetterModel.Correct('D'),
+        )
     )
 }
