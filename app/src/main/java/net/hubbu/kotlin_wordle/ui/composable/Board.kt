@@ -1,6 +1,5 @@
 package net.hubbu.kotlin_wordle.ui.composable
 
-import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -15,17 +14,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextGranularity.Companion.Word
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.hubbu.kotlin_wordle.data.LetterModel
 import net.hubbu.kotlin_wordle.ui.GameScreenViewModel
 import net.hubbu.kotlin_wordle.ui.theme.getColor
-
-// TODO
-const val maxWordCount = 6
-const val WORD_LENGTH = 5
 
 enum class LetterType {
     Empty, Correct, Absent, Present, Guess
@@ -36,19 +30,22 @@ fun Board(
     modifier: Modifier = Modifier,
     target: String,
     guessedWords: List<String>,
-    currentWord: String
+    currentWord: String,
+    viewModel: GameScreenViewModel = viewModel()
 ) {
     val displayedRows = mutableListOf<String>()
     displayedRows.addAll(guessedWords)
 
     // Add currentWord if there's space for it (i.e., we haven't guessed maxWordCount words yet)
-    if (guessedWords.size < maxWordCount) {
+    if (guessedWords.size < viewModel.maxWordCount) {
         displayedRows.add(currentWord)
     }
 
     // Add any remaining empty rows to fill up to maxWordCount
-    val emptyRowCount = maxWordCount - displayedRows.size
-    displayedRows.addAll(List(emptyRowCount) { " ".repeat(WORD_LENGTH) })
+    val emptyRowCount = viewModel.maxWordCount - displayedRows.size
+    displayedRows.addAll(
+        List(emptyRowCount) { " ".repeat(viewModel.wordLength) }
+    )
 
     val targetMap = getIndexedLetterMap(word = target)
 
@@ -59,7 +56,12 @@ fun Board(
     ) {
         for (i in displayedRows.indices) {
             val isCurrentWord = i == guessedWords.size
-            Word(displayedRows[i], targetMap, isCurrentWord)
+            Word(
+                displayedRows[i],
+                viewModel.wordLength,
+                targetMap,
+                isCurrentWord,
+            )
         }
     }
 }
@@ -67,6 +69,7 @@ fun Board(
 @Composable
 fun Word(
     word: String,
+    maxWordLength: Int,
     targetMap: Map<Char, List<Int>>,
     isCurrentWord: Boolean,
     modifier: Modifier = Modifier
@@ -75,7 +78,7 @@ fun Word(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         // Ensure the word displayed has the correct length, padding with spaces if necessary
-        val displayableWord = word.padEnd(WORD_LENGTH, ' ')
+        val displayableWord = word.padEnd(maxWordLength, ' ')
 
         for (i in displayableWord.indices) {
             val letter = displayableWord[i]
