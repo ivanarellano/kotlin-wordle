@@ -31,11 +31,7 @@ fun GameScreen(
     modifier: Modifier = Modifier,
     viewModel: GameViewModel = viewModel()
 ) {
-    val currentWord by viewModel.uiState.map { it.currentWord }
-        .collectAsStateWithLifecycle(initialValue = "")
-
-    val guessedWords by viewModel.uiState.map { it.guessedWords }
-        .collectAsStateWithLifecycle(initialValue = emptyList())
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         modifier,
@@ -69,8 +65,8 @@ fun GameScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             Board(
-                guessedWords = guessedWords,
-                currentWord = currentWord,
+                guessedWords = uiState.guessedWords,
+                currentWord = uiState.currentWord,
                 targetWordMatches = viewModel.targetWordMatches,
                 maxWordLength = viewModel.maxWordLength,
                 maxWordCount = viewModel.maxWordCount,
