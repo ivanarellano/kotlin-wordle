@@ -1,6 +1,5 @@
 package net.hubbu.kotlin_wordle.ui.composable
 
-import android.util.Log.i
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.hubbu.kotlin_wordle.R
-import net.hubbu.kotlin_wordle.ui.KeyboardViewModel
+import net.hubbu.kotlin_wordle.ui.GameScreenViewModel
 import net.hubbu.kotlin_wordle.data.LetterModel
 import net.hubbu.kotlin_wordle.ui.theme.getColor
 
@@ -42,7 +41,7 @@ fun Keyboard(
     targetMap: Map<Char, List<Int>>,
     modifier: Modifier = Modifier,
     guessedWords: List<String> = emptyList(),
-    viewModel: KeyboardViewModel = viewModel()
+    viewModel: GameScreenViewModel = viewModel()
 ) {
     val keyMatches = viewModel.getKeyMatchStatus(targetMap, guessedWords)
 

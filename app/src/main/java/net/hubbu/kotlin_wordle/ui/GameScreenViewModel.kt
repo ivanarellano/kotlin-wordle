@@ -6,9 +6,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import net.hubbu.kotlin_wordle.data.LetterModel
 
-class KeyboardViewModel : ViewModel() {
-    // TODO: Extract into a class
-    val wordLength = 5
+class GameScreenViewModel : ViewModel() {
+    val wordLength: Int
+        get() = 5
+
+    val maxWordCount: Int
+        get() = 6
+
     val currentWord: MutableStateFlow<String> = MutableStateFlow("")
 
     // When a text key is pressed

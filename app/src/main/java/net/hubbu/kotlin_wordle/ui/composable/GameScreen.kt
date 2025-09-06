@@ -21,14 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import net.hubbu.kotlin_wordle.ui.KeyboardViewModel
+import net.hubbu.kotlin_wordle.ui.GameScreenViewModel
 import net.hubbu.kotlin_wordle.ui.theme.KotlinWordleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameScreen(
     modifier: Modifier = Modifier,
-    keyboardViewModel: KeyboardViewModel = viewModel()
+    keyboardViewModel: GameScreenViewModel = viewModel()
 ) {
     // Collect the current word from the ViewModel
     // Make sure your KeyboardViewModel.currentWord is a StateFlow
