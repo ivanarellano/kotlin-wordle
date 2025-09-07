@@ -1,15 +1,17 @@
 package net.hubbu.kotlin_wordle.ui
 
+import android.app.Application
 import android.util.Log
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import net.hubbu.kotlin_wordle.data.GameUiState
 import net.hubbu.kotlin_wordle.data.LetterModel
+import org.json.JSONArray
 
-class GameViewModel : ViewModel() {
+class GameViewModel(application: Application) : AndroidViewModel(application) {
     val maxWordLength: Int = 5
     val maxWordCount: Int = 6
 
@@ -17,6 +19,27 @@ class GameViewModel : ViewModel() {
     val uiState: StateFlow<GameUiState> = _uiState.asStateFlow()
 
     val targetWordMatches: Map<Char, List<Int>> = getIndexedLetterMap(_uiState.value.targetWord)
+
+    // TODO: Move into repository
+    // Used to check for valid guesses
+    private val wordleGuessList: List<String> by lazy {
+        loadJson("nonwordles.json")
+    }
+
+    private val wordleSolutionList: List<String> by lazy {
+        loadJson("wordles.json")
+    }
+
+    private fun loadJson(fileName: String): List<String> = try {
+        val context = getApplication<Application>().applicationContext
+        val jsonString =
+            context.assets.open(fileName).bufferedReader().use { it.readText() }
+        val jsonArray = JSONArray(jsonString)
+        List(jsonArray.length()) { i -> jsonArray.getString(i) }
+    } catch (e: Exception) {
+        Log.e("GameViewModel", "Error reading or parsing ${fileName}", e)
+        emptyList()
+    }
 
     // When a key is pressed
     fun onKeyPress(keyText: String) {
@@ -55,6 +78,14 @@ class GameViewModel : ViewModel() {
                     didWin = didWin
                 )
             }
+        }
+
+        // TODO: Benchmark against list.binarySearch(word)
+        // Check if the current word is not in both wordle guess or solution list
+        if (_uiState.value.currentWord.lowercase() !in wordleGuessList
+            && _uiState.value.currentWord.lowercase() !in wordleSolutionList) {
+            Log.d("GameViewModel", "Word not valid")
+            return
         }
 
         _uiState.update { currentState ->
