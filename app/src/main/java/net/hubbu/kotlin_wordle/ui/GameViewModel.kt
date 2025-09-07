@@ -16,10 +16,7 @@ class GameViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(GameUiState())
     val uiState: StateFlow<GameUiState> = _uiState.asStateFlow()
 
-    // TODO: Use a real word list
-    val targetWordMatches: Map<Char, List<Int>> by lazy {
-        getIndexedLetterMap("AUDIO")
-    }
+    val targetWordMatches: Map<Char, List<Int>> = getIndexedLetterMap(_uiState.value.targetWord)
 
     // When a key is pressed
     fun onKeyPress(keyText: String) {
@@ -41,12 +38,29 @@ class GameViewModel : ViewModel() {
 
     // When the enter key is pressed
     fun onEnter() {
-        Log.d("GameViewModel", "Enter pressed")
-        // TODO: Validate the word (currently clears)
+        if (_uiState.value.isGameOver) return
+
+        if (_uiState.value.currentWord.length < maxWordLength) {
+            Log.d("GameViewModel", "Word too short")
+            return
+        }
+
+        val didWin = _uiState.value.currentWord == _uiState.value.targetWord
+        val didLose = _uiState.value.guessedWords.size >= maxWordCount - 1
+
+        if (didWin || didLose) {
+            _uiState.update { currentState ->
+                currentState.copy(
+                    isGameOver = true,
+                    didWin = didWin
+                )
+            }
+        }
+
         _uiState.update { currentState ->
             currentState.copy(
                 currentWord = "",
-//                guessedWords = currentState.guessedWords + currentState.currentWord
+                guessedWords = currentState.guessedWords + currentState.currentWord
             )
         }
     }
