@@ -24,14 +24,6 @@ class GameViewModel(private val wordListRepo: WordListRepository) : ViewModel() 
 
     val targetWordMatches: Map<Char, List<Int>> = getIndexedLetterMap(_uiState.value.targetWord)
 
-    // Used to check for valid guesses
-    private val wordleGuessList: List<String> by lazy {
-        wordListRepo.loadList("nonwordles.json")
-    }
-    private val wordleSolutionList: List<String> by lazy {
-        wordListRepo.loadList("wordles.json")
-    }
-
     // When a key is pressed
     fun onKeyPress(keyText: String) {
         if (_uiState.value.currentWord.length < maxWordLength) {
@@ -73,8 +65,8 @@ class GameViewModel(private val wordListRepo: WordListRepository) : ViewModel() 
 
         // TODO: Benchmark against list.binarySearch(word)
         // Check if the current word is not in both wordle guess or solution list
-        if (_uiState.value.currentWord.lowercase() !in wordleGuessList
-            && _uiState.value.currentWord.lowercase() !in wordleSolutionList) {
+        if (_uiState.value.currentWord.lowercase() !in wordListRepo.wordleGuessList
+            && _uiState.value.currentWord.lowercase() !in wordListRepo.wordleSolutionList) {
             Log.d("GameViewModel", "Word not valid")
             return
         }

@@ -5,6 +5,14 @@ import android.util.Log
 import org.json.JSONArray
 
 class WordListRepository(private val context: Context) {
+    // Used to check for valid guesses
+    val wordleGuessList: List<String> by lazy {
+        loadList("nonwordles.json")
+    }
+    val wordleSolutionList: List<String> by lazy {
+        loadList("wordles.json")
+    }
+
     fun loadList(fileName: String): List<String> = try {
         val jsonString =
             context.assets.open(fileName).bufferedReader().use { it.readText() }
