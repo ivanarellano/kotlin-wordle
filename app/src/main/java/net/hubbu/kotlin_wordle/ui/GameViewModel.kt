@@ -1,17 +1,21 @@
 package net.hubbu.kotlin_wordle.ui
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import net.hubbu.kotlin_wordle.GameApplication
 import net.hubbu.kotlin_wordle.data.GameUiState
 import net.hubbu.kotlin_wordle.data.LetterModel
-import org.json.JSONArray
+import net.hubbu.kotlin_wordle.data.WordListRepository
 
-class GameViewModel(application: Application) : AndroidViewModel(application) {
+class GameViewModel(private val wordListRepo: WordListRepository) : ViewModel() {
     val maxWordLength: Int = 5
     val maxWordCount: Int = 6
 
@@ -20,25 +24,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     val targetWordMatches: Map<Char, List<Int>> = getIndexedLetterMap(_uiState.value.targetWord)
 
-    // TODO: Move into repository
     // Used to check for valid guesses
     private val wordleGuessList: List<String> by lazy {
-        loadJson("nonwordles.json")
+        wordListRepo.loadList("nonwordles.json")
     }
-
     private val wordleSolutionList: List<String> by lazy {
-        loadJson("wordles.json")
-    }
-
-    private fun loadJson(fileName: String): List<String> = try {
-        val context = getApplication<Application>().applicationContext
-        val jsonString =
-            context.assets.open(fileName).bufferedReader().use { it.readText() }
-        val jsonArray = JSONArray(jsonString)
-        List(jsonArray.length()) { i -> jsonArray.getString(i) }
-    } catch (e: Exception) {
-        Log.e("GameViewModel", "Error reading or parsing ${fileName}", e)
-        emptyList()
+        wordListRepo.loadList("wordles.json")
     }
 
     // When a key is pressed
@@ -133,5 +124,15 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             targetMap[letter] = list
         }
         return targetMap.toMap()
+    }
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[APPLICATION_KEY] as GameApplication)
+                val wordListRepo = application.container.wordListRepo
+                GameViewModel(wordListRepo)
+            }
+        }
     }
 }
