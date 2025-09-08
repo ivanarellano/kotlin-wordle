@@ -29,8 +29,8 @@ import net.hubbu.kotlin_wordle.ui.theme.KotlinWordleTheme
 @Composable
 fun GameScreen(
     modifier: Modifier = Modifier,
-    viewModel: GameViewModel = viewModel()
 ) {
+    val viewModel: GameViewModel = viewModel(factory = GameViewModel.Factory)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(

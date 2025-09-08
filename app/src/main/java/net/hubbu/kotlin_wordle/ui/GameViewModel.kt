@@ -2,14 +2,20 @@ package net.hubbu.kotlin_wordle.ui
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import net.hubbu.kotlin_wordle.GameApplication
 import net.hubbu.kotlin_wordle.data.GameUiState
 import net.hubbu.kotlin_wordle.data.LetterModel
+import net.hubbu.kotlin_wordle.data.WordListRepository
 
-class GameViewModel : ViewModel() {
+class GameViewModel(private val wordListRepo: WordListRepository) : ViewModel() {
     val maxWordLength: Int = 5
     val maxWordCount: Int = 6
 
@@ -68,6 +74,14 @@ class GameViewModel : ViewModel() {
             }
         }
 
+        // TODO: Benchmark against list.binarySearch(word)
+        // Check if the current word is not in both wordle guess or solution list
+        if (_uiState.value.currentWord.lowercase() !in wordListRepo.wordleGuessList
+            && _uiState.value.currentWord.lowercase() !in wordListRepo.wordleSolutionList) {
+            Log.d("GameViewModel", "Word not valid")
+            return
+        }
+
         _uiState.update { currentState ->
             currentState.copy(
                 currentWord = "",
@@ -113,5 +127,15 @@ class GameViewModel : ViewModel() {
             targetMap[letter] = list
         }
         return targetMap.toMap()
+    }
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[APPLICATION_KEY] as GameApplication)
+                val wordListRepo = application.container.wordListRepo
+                GameViewModel(wordListRepo)
+            }
+        }
     }
 }
