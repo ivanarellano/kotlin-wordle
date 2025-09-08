@@ -20,6 +20,10 @@ class GameViewModel : ViewModel() {
 
     // When a key is pressed
     fun onKeyPress(keyText: String) {
+        if (_uiState.value.isGameOver) {
+            Log.d("GameViewModel", "Game is over")
+            return
+        }
         if (_uiState.value.currentWord.length < maxWordLength) {
             _uiState.update { currentState ->
                 currentState.copy(currentWord = currentState.currentWord + keyText)
@@ -29,6 +33,10 @@ class GameViewModel : ViewModel() {
 
     // When the delete key is pressed
     fun onDelete() {
+        if (_uiState.value.isGameOver) {
+            Log.d("GameViewModel", "Game is over")
+            return
+        }
         if (_uiState.value.currentWord.isNotEmpty()) {
             _uiState.update { currentState ->
                 currentState.copy(currentWord = currentState.currentWord.dropLast(1))
@@ -38,7 +46,10 @@ class GameViewModel : ViewModel() {
 
     // When the enter key is pressed
     fun onEnter() {
-        if (_uiState.value.isGameOver) return
+        if (_uiState.value.isGameOver) {
+            Log.d("GameViewModel", "Game is over")
+            return
+        }
 
         if (_uiState.value.currentWord.length < maxWordLength) {
             Log.d("GameViewModel", "Word too short")
@@ -46,7 +57,7 @@ class GameViewModel : ViewModel() {
         }
 
         val didWin = _uiState.value.currentWord == _uiState.value.targetWord
-        val didLose = _uiState.value.guessedWords.size >= maxWordCount - 1
+        val didLose = 1 + _uiState.value.guessedWords.size >= maxWordCount
 
         if (didWin || didLose) {
             _uiState.update { currentState ->
