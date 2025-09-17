@@ -1,5 +1,7 @@
 package net.hubbu.kotlin_wordle.ui.composable
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,21 +20,46 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlinx.coroutines.flow.map
+import net.hubbu.kotlin_wordle.data.LetterModel
 import net.hubbu.kotlin_wordle.ui.GameViewModel
 import net.hubbu.kotlin_wordle.ui.theme.KotlinWordleTheme
+
+@Composable
+fun GameScreen(modifier: Modifier = Modifier) {
+    val viewModel: GameViewModel = viewModel(factory = GameViewModel.Factory)
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    GameScreen(
+        guessedWords = uiState.guessedWords,
+        currentWord = uiState.currentWord,
+        targetWordMatches = viewModel.targetWordMatches,
+        maxWordLength = viewModel.maxWordLength,
+        maxWordCount = viewModel.maxWordCount,
+        keyMatches = viewModel.getKeyMatchStatus(),
+        onKeyPress = viewModel::onKeyPress,
+        onEnter = viewModel::onEnter,
+        onDelete = viewModel::onDelete,
+        modifier = modifier
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameScreen(
+    guessedWords: List<String>,
+    currentWord: String,
+    targetWordMatches: Map<Char, List<Int>>,
+    maxWordLength: Int,
+    maxWordCount: Int,
+    keyMatches: Map<Char, LetterModel>,
     modifier: Modifier = Modifier,
+    onKeyPress: (String) -> Unit = {},
+    onDelete: () -> Unit = {},
+    onEnter: () -> Unit = {},
 ) {
-    val viewModel: GameViewModel = viewModel(factory = GameViewModel.Factory)
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
     Scaffold(
         modifier,
         topBar = {
@@ -65,20 +92,20 @@ fun GameScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             Board(
-                guessedWords = uiState.guessedWords,
-                currentWord = uiState.currentWord,
-                targetWordMatches = viewModel.targetWordMatches,
-                maxWordLength = viewModel.maxWordLength,
-                maxWordCount = viewModel.maxWordCount,
+                guessedWords = guessedWords,
+                currentWord = currentWord,
+                targetWordMatches = targetWordMatches,
+                maxWordLength = maxWordLength,
+                maxWordCount = maxWordCount,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(2.5f),
             )
             Keyboard(
-                keyMatches = viewModel.getKeyMatchStatus(),
-                onKeyPress = viewModel::onKeyPress,
-                onDelete = viewModel::onDelete,
-                onEnter = viewModel::onEnter,
+                keyMatches = keyMatches,
+                onKeyPress = onKeyPress,
+                onEnter = onEnter,
+                onDelete = onDelete,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
@@ -91,6 +118,29 @@ fun GameScreen(
 @Composable
 fun AppPreview() {
     KotlinWordleTheme {
-        GameScreen(modifier = Modifier.fillMaxSize())
+        GameScreen(
+            guessedWords = listOf(
+                "ABOUT",
+                "TABLE",
+                "CHAIR",
+                "PLANT",
+            ),
+            currentWord = "AUD",
+            targetWordMatches = mapOf(
+                'A' to listOf(0),
+                'U' to listOf(1),
+                'D' to listOf(2),
+                'I' to listOf(3),
+                'O' to listOf(4),
+            ),
+            maxWordLength = 5,
+            maxWordCount = 6,
+            keyMatches = mapOf(
+                'A' to LetterModel.Absent('A'),
+                'U' to LetterModel.Present('U'),
+                'D' to LetterModel.Correct('D'),
+            ),
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }

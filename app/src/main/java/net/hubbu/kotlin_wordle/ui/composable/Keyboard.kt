@@ -38,9 +38,9 @@ enum class KeyboardIcon(val res: Int, val description: String) {
 fun Keyboard(
     keyMatches: Map<Char, LetterModel>,
     modifier: Modifier = Modifier,
+    onKeyPress: (String) -> Unit = {},
     onEnter: () -> Unit = {},
     onDelete: () -> Unit = {},
-    onKeyPress: (String) -> Unit = {},
 ) {
     @Composable
     fun KeyRow(keys: String, isBottomRow: Boolean = false) {
