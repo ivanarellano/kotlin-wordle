@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Kotlin-Wordle</string>
+    <string name="end_game_message_1">Genius</string>
+    <string name="end_game_message_2">Magnificent</string>
+    <string name="end_game_message_3">Impressive</string>
+    <string name="end_game_message_4">Splendid</string>
+    <string name="end_game_message_5">Great</string>
+    <string name="end_game_message_6">Phew</string>
 </resources>

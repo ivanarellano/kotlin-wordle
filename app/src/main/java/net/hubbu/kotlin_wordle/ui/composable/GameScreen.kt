@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.hubbu.kotlin_wordle.data.LetterModel
 import net.hubbu.kotlin_wordle.ui.GameViewModel
+import net.hubbu.kotlin_wordle.R
 import net.hubbu.kotlin_wordle.ui.theme.KotlinWordleTheme
 
 @Composable
@@ -141,13 +143,14 @@ fun GameScreen(
 @Composable
 fun EndGameMessage(guessCount: Int, modifier: Modifier = Modifier) {
     // 1: Genius 2: Magnificent 3: Impressive 4: Splendid 5: Great 6: Phew
-    val text = when (guessCount) {
-        1 -> "Genius"
-        2 -> "Magnificent"
-        3 -> "Impressive"
-        4 -> "Splendid"
-        5 -> "Great"
-        6 -> "Phew"
+    val context = LocalContext.current
+    val text = when(guessCount) {
+        1 -> context.getString(R.string.end_game_message_1)
+        2 -> context.getString(R.string.end_game_message_2)
+        3 -> context.getString(R.string.end_game_message_3)
+        4 -> context.getString(R.string.end_game_message_4)
+        5 -> context.getString(R.string.end_game_message_5)
+        6 -> context.getString(R.string.end_game_message_6)
         else -> ""
     }
 
