@@ -1,6 +1,7 @@
 package net.hubbu.kotlin_wordle.ui
 
 import android.util.Log
+import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -11,11 +12,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import net.hubbu.kotlin_wordle.GameApplication
+import net.hubbu.kotlin_wordle.R
 import net.hubbu.kotlin_wordle.data.GameUiState
 import net.hubbu.kotlin_wordle.data.LetterModel
 import net.hubbu.kotlin_wordle.data.WordListRepository
 
-class GameViewModel(private val wordListRepo: WordListRepository) : ViewModel() {
+class GameViewModel(
+    private val wordListRepo: WordListRepository,
+    private val resProvider: ResourceProvider
+) : ViewModel() {
     val maxWordLength: Int = 5
     val maxWordCount: Int = 6
 
@@ -115,6 +120,24 @@ class GameViewModel(private val wordListRepo: WordListRepository) : ViewModel() 
         return keyMatches
     }
 
+    fun getEndGameMessage(): String {
+        val message = if (_uiState.value.didWin) {
+            when (_uiState.value.guessedWords.size) {
+                // 1: Genius 2: Magnificent 3: Impressive 4: Splendid 5: Great 6: Phew
+                1 -> resProvider.getString(R.string.end_game_message_1)
+                2 -> resProvider.getString(R.string.end_game_message_2)
+                3 -> resProvider.getString(R.string.end_game_message_3)
+                4 -> resProvider.getString(R.string.end_game_message_4)
+                5 -> resProvider.getString(R.string.end_game_message_5)
+                6 -> resProvider.getString(R.string.end_game_message_6)
+                else -> ""
+            }
+        } else {
+            _uiState.value.targetWord
+        }
+        return message.uppercase()
+    }
+
     // Example: word = "APPLE", output = {A=[0], P=[1, 4], L=[2], E=[3]}
     private fun getIndexedLetterMap(word: String): Map<Char, List<Int>> {
         val targetMap = mutableMapOf<Char, MutableList<Int>>().withDefault { mutableListOf() }
@@ -133,8 +156,10 @@ class GameViewModel(private val wordListRepo: WordListRepository) : ViewModel() 
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as GameApplication)
-                val wordListRepo = application.container.wordListRepo
-                GameViewModel(wordListRepo)
+                GameViewModel(
+                    application.container.wordListRepo,
+                    application.container.resourceProvider
+                )
             }
         }
     }

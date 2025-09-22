@@ -28,15 +28,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import net.hubbu.kotlin_wordle.R
+import net.hubbu.kotlin_wordle.data.GameUiState
 import net.hubbu.kotlin_wordle.data.LetterModel
 import net.hubbu.kotlin_wordle.ui.GameViewModel
-import net.hubbu.kotlin_wordle.R
 import net.hubbu.kotlin_wordle.ui.theme.KotlinWordleTheme
 
 @Composable
@@ -44,13 +45,12 @@ fun GameScreen(modifier: Modifier = Modifier) {
     val viewModel: GameViewModel = viewModel(factory = GameViewModel.Factory)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     GameScreen(
-        guessedWords = uiState.guessedWords,
-        currentWord = uiState.currentWord,
-        isGameOver = uiState.isGameOver,
+        uiState = uiState,
         targetWordMatches = viewModel.targetWordMatches,
         maxWordLength = viewModel.maxWordLength,
         maxWordCount = viewModel.maxWordCount,
         keyMatches = viewModel.getKeyMatchStatus(),
+        endGameMessage = viewModel::getEndGameMessage,
         onKeyPress = viewModel::onKeyPress,
         onEnter = viewModel::onEnter,
         onDelete = viewModel::onDelete,
@@ -61,14 +61,13 @@ fun GameScreen(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameScreen(
-    guessedWords: List<String>,
-    currentWord: String,
-    isGameOver: Boolean,
+    uiState: GameUiState,
     targetWordMatches: Map<Char, List<Int>>,
     maxWordLength: Int,
     maxWordCount: Int,
     keyMatches: Map<Char, LetterModel>,
     modifier: Modifier = Modifier,
+    endGameMessage: () -> String = {""},
     onKeyPress: (String) -> Unit = {},
     onDelete: () -> Unit = {},
     onEnter: () -> Unit = {},
@@ -82,7 +81,7 @@ fun GameScreen(
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 title = {
-                    Text("Wordle")
+                    Text(stringResource(id = R.string.app_name))
                 },
                 actions = {
                     IconButton(onClick = { /* TODO: do something */ }) {
@@ -106,20 +105,20 @@ fun GameScreen(
                 .padding(innerPadding)
         ) {
             AnimatedVisibility(
-                visible = isGameOver,
+                visible = uiState.isGameOver,
                 enter = fadeIn(),
                 exit = fadeOut(),
                 modifier = Modifier
                     .align(Alignment.TopCenter) // Position it at the top center
                     .padding(top = 8.dp) // Adjust padding to move it down
             ) {
-                EndGameMessage(guessedWords.size)
+                EndGameMessage(endGameMessage())
             }
             
             Column {
                 Board(
-                    guessedWords = guessedWords,
-                    currentWord = currentWord,
+                    guessedWords = uiState.guessedWords,
+                    currentWord = uiState.currentWord,
                     targetWordMatches = targetWordMatches,
                     maxWordLength = maxWordLength,
                     maxWordCount = maxWordCount,
@@ -141,19 +140,7 @@ fun GameScreen(
     }
 }
 @Composable
-fun EndGameMessage(guessCount: Int, modifier: Modifier = Modifier) {
-    // 1: Genius 2: Magnificent 3: Impressive 4: Splendid 5: Great 6: Phew
-    val context = LocalContext.current
-    val text = when(guessCount) {
-        1 -> context.getString(R.string.end_game_message_1)
-        2 -> context.getString(R.string.end_game_message_2)
-        3 -> context.getString(R.string.end_game_message_3)
-        4 -> context.getString(R.string.end_game_message_4)
-        5 -> context.getString(R.string.end_game_message_5)
-        6 -> context.getString(R.string.end_game_message_6)
-        else -> ""
-    }
-
+fun EndGameMessage(message: String, modifier: Modifier = Modifier) {
     return Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -162,7 +149,7 @@ fun EndGameMessage(guessCount: Int, modifier: Modifier = Modifier) {
             .width(86.dp)
             .height(56.dp)
     ) {
-        Text(text, color = Color.White)
+        Text(message, color = Color.White)
     }
 }
 
@@ -170,7 +157,7 @@ fun EndGameMessage(guessCount: Int, modifier: Modifier = Modifier) {
 @Composable
 fun EndGameMessagePreview() {
     KotlinWordleTheme {
-        EndGameMessage(guessCount = 1)
+        EndGameMessage("")
     }
 }
 
@@ -179,14 +166,17 @@ fun EndGameMessagePreview() {
 fun AppPreview() {
     KotlinWordleTheme {
         GameScreen(
-            guessedWords = listOf(
-                "ABOUT",
-                "TABLE",
-                "CHAIR",
-                "PLANT",
+            uiState = GameUiState(
+                guessedWords = listOf(
+                    "ABOUT",
+                    "TABLE",
+                    "CHAIR",
+                    "PLANT",
+                ),
+                currentWord = "AUD",
+                isGameOver = true,
+                didWin = false,
             ),
-            currentWord = "AUD",
-            isGameOver = true,
             targetWordMatches = mapOf(
                 'A' to listOf(0),
                 'U' to listOf(1),

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Kotlin-Wordle</string>
+    <string name="app_name">Wordle</string>
     <string name="end_game_message_1">Genius</string>
     <string name="end_game_message_2">Magnificent</string>
     <string name="end_game_message_3">Impressive</string>
