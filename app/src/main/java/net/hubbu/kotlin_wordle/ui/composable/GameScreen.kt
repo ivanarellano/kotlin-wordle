@@ -15,16 +15,23 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import net.hubbu.kotlin_wordle.R
 import net.hubbu.kotlin_wordle.data.GameUiState
 import net.hubbu.kotlin_wordle.data.LetterModel
@@ -72,6 +80,10 @@ fun GameScreen(
     onDelete: () -> Unit = {},
     onEnter: () -> Unit = {},
 ) {
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    var showBottomSheet by remember { mutableStateOf(false) }
+
     Scaffold(
         modifier,
         topBar = {
@@ -84,7 +96,11 @@ fun GameScreen(
                     Text(stringResource(id = R.string.app_name))
                 },
                 actions = {
-                    IconButton(onClick = { /* TODO: do something */ }) {
+                    IconButton(onClick = {
+                        scope.launch { sheetState.show() }.invokeOnCompletion {
+                            showBottomSheet = true
+                        }
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.Info,
                             contentDescription = "Instructions"
@@ -137,6 +153,26 @@ fun GameScreen(
                 )
             }
         }
+
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    showBottomSheet = false
+                },
+                sheetState = sheetState
+            ) {
+                // TODO: Temporary design
+                Button(onClick = {
+                    scope.launch { sheetState.hide() }.invokeOnCompletion {
+                        if (!sheetState.isVisible) {
+                            showBottomSheet = false
+                        }
+                    }
+                }) {
+                    Text("Hide bottom sheet")
+                }
+            }
+        }
     }
 }
 @Composable
@@ -151,6 +187,11 @@ fun EndGameMessage(message: String, modifier: Modifier = Modifier) {
     ) {
         Text(message, color = Color.White)
     }
+}
+
+@Composable
+fun HowToPlaySheet() {
+
 }
 
 @Preview(showBackground = false)
