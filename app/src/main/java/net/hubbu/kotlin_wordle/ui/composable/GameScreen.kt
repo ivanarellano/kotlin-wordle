@@ -157,7 +157,7 @@ fun EndGameMessage(message: String, modifier: Modifier = Modifier) {
 @Composable
 fun EndGameMessagePreview() {
     KotlinWordleTheme {
-        EndGameMessage("")
+        EndGameMessage("SPLENDID")
     }
 }
 
@@ -174,7 +174,7 @@ fun AppPreview() {
                     "PLANT",
                 ),
                 currentWord = "AUD",
-                isGameOver = true,
+                isGameOver = false,
                 didWin = false,
             ),
             targetWordMatches = mapOf(
