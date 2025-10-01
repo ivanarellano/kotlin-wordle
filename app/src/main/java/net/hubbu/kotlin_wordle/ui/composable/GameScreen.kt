@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,6 +38,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -169,7 +174,7 @@ fun GameScreen(
                         }
                     }
                 }) {
-                    Text("Hide bottom sheet")
+
                 }
             }
         }
@@ -191,10 +196,56 @@ fun EndGameMessage(message: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun HowToPlaySheet() {
+    @Composable
+    fun BoldExampleText(letter: String, instruction: String) {
+        val annotatedString = buildAnnotatedString {
+            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                append(letter)
+            }
+            append(instruction)
+        }
+        Text(text = annotatedString)
+    }
+    Column {
+        Text(
+            text = "How to play",
+            style = MaterialTheme.typography.displayLarge
+        )
+        Text(
+            text = "Guess the word in 6 tries",
+            style = MaterialTheme.typography.titleLarge
+        )
+        Spacer(Modifier.height(12.dp))
 
+        Text("Each guess must be a valid 5 letter word.")
+        Text("The color of the tiles will change to show how close your guess was to the word.")
+        Spacer(Modifier.height(12.dp))
+
+        Text("Examples", fontWeight = FontWeight.Bold)
+        // TODO: WORDY example
+
+        BoldExampleText("W", " is in the word and in the correct spot.")
+        Spacer(Modifier.height(12.dp))
+
+        // TODO: LIGHT example
+        BoldExampleText("I", " is in the word but in the wrong spot.")
+        Spacer(Modifier.height(12.dp))
+
+        // TODO: ROGUE example
+        BoldExampleText("U", " is not in the word in any spot.")
+        Spacer(Modifier.height(12.dp))
+    }
 }
 
-@Preview(showBackground = false)
+@Preview(showBackground = true)
+@Composable
+fun HowToPlaySheetPreview() {
+    KotlinWordleTheme {
+        HowToPlaySheet()
+    }
+}
+
+@Preview
 @Composable
 fun EndGameMessagePreview() {
     KotlinWordleTheme {
