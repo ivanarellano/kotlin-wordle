@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import net.hubbu.kotlin_wordle.data.LetterModel
 import net.hubbu.kotlin_wordle.ui.theme.getColor
@@ -96,12 +97,12 @@ fun Word(
 }
 
 @Composable
-fun Letter(model: LetterModel, modifier: Modifier = Modifier) {
+fun Letter(model: LetterModel, modifier: Modifier = Modifier, size: Dp = 62.dp) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .width(62.dp)
-            .height(62.dp)
+            .width(size)
+            .height(size)
             .border(width = 2.dp, color = model.borderColor.getColor())
             .background(color = model.bgColor.getColor())
             .wrapContentSize(),
