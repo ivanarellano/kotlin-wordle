@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -40,6 +41,14 @@ android {
 }
 
 dependencies {
+    val room_version = "2.8.1"
+
+    ksp(libs.androidx.room.compiler)
+
+    // Optional for Room
+    implementation(libs.androidx.room.ktx)
+    testImplementation(libs.androidx.room.testing)
+
     implementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(platform(libs.androidx.compose.bom))
 
